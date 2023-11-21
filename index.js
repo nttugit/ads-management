@@ -4,8 +4,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-import connectDB from './utils/db.js';
-connectDB();
+import db from './utils/db.js';
 
 import userRouter from './routes/user.route.js';
 
