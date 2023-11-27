@@ -12,21 +12,20 @@ const port = process.env.PORT || 3000;
 import db from './utils/db.js';
 
 // Sử dụng routes ở đây
-import userRouter from './routes/user.route.js';
-import authRouter from './routes/auth.route.js';
+// import userRouter from './routes/user.route.js';
+// import authRouter from './routes/auth.route.js';
+import adsLocationRouter from './routes/adsLocation.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
 
 app.use(express.json());
 
-// Đăng nhập chung cho thường dân và cán bộ
-app.use('/auth', authRouter);
+// app.use('/auth', authRouter);
+// app.use('/users', userRouter);
 
-// Người dân
-app.use('/users', userRouter);
-
-// Cán bộ
+// Địa điểm đặt biển quảng cáo
+app.use('/ads-locations', adsLocationRouter);
 
 // Biển quảng cáo
 // app.use('/ads', adsRouter);
@@ -53,5 +52,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-    console.log(`Big Ads server is listening on port ${port}`);
+    console.log(`Big Ads server is listening on http://localhost:${port}`);
 });

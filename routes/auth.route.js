@@ -1,7 +1,7 @@
-import express from 'express';
-const router = express.Router();
-import authHandler from '../handlers/auth.handler.js';
+// import express from 'express';
+// const router = express.Router();
+// import authHandler from '../handlers/auth.handler.js';
 
-router.get('/', authHandler.test);
+// router.get('/', authHandler.test);
 
-export default router;
+// export default router;
