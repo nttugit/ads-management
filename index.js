@@ -16,6 +16,7 @@ import './utils/db.js';
 // import authRouter from './routes/auth.route.js';
 import adsLocationRouter from './routes/adsLocation.route.js';
 import adsCategoryRouter from './routes/adsCategory.route.js';
+import billboardTypeRouter from './routes/billboardType.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
@@ -41,6 +42,7 @@ app.use('/ads-locations', adsLocationRouter);
 
 // Hình thức quảng cáo
 app.use('/ads-categories', adsCategoryRouter);
+app.use('/billboard-types', billboardTypeRouter);
 
 // Ví dụ cách response đúng
 app.get('/', (req, res) => {

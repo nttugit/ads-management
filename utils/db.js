@@ -3,9 +3,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Connection URL
-// const dbUrl = 'mongodb://127.0.0.1:27017/ads-management';
+ const dbUrl = 'mongodb://127.0.0.1:27017/ads-management';
 console.log('username', process.env.MONGO_USERNAME);
-const dbUrl = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.2qzhctk.mongodb.net/${process.env.MONGO_DB_NAME}`;
+//const dbUrl = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.2qzhctk.mongodb.net/${process.env.MONGO_DB_NAME}`;
 
 // Connect to MongoDB
 mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
