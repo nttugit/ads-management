@@ -24,6 +24,8 @@ controller.getAdsCategories = async (req, res) => {
 controller.getAdsCategory = async (req, res) => {
     const { id } = req.params;
     const adsCategory = await handler.getAdsCategoryById(id);
+    // Nhớ return khi muốn kết thúc
+    if (!adsCategory) return res.status(204).send();
     res.status(200).json(RESPONSE.SUCCESS(adsCategory, 'get sucessfully'));
 };
 

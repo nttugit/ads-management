@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Kết nối cơ sở dữ liệu
-import db from './utils/db.js';
+import './utils/db.js';
 
 // Sử dụng routes ở đây
 // import userRouter from './routes/user.route.js';
