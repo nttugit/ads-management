@@ -15,6 +15,7 @@ import db from './utils/db.js';
 // import userRouter from './routes/user.route.js';
 // import authRouter from './routes/auth.route.js';
 import adsLocationRouter from './routes/adsLocation.route.js';
+import adsCategoryRouter from './routes/adsCategory.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
@@ -35,6 +36,11 @@ app.use('/ads-locations', adsLocationRouter);
 
 // Thống kê
 // app.use('/stats', statsRouter);
+
+// CÁC THÀNH PHẦN KHÁC
+
+// Hình thức quảng cáo
+app.use('/ads-categories', adsCategoryRouter);
 
 // Ví dụ cách response đúng
 app.get('/', (req, res) => {

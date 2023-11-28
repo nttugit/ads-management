@@ -22,4 +22,11 @@ controller.getAdsLocations = async (req, res) => {
     );
 };
 
+controller.postAdsLocation = async (req, res) => {
+    // Todo: validate
+    const data = req.body;
+    const newAdsLocation = await handler.createAdsLocation(data);
+    res.status(200).json(RESPONSE.SUCCESS(newAdsLocation, 'created'));
+};
+
 export default controller;

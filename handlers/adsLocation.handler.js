@@ -19,4 +19,8 @@ handler.count = async (condition = {}) => {
     return Model.countDocuments(condition);
 };
 
+handler.createAdsLocation = async (data) => {
+    return Model.create(data);
+};
+
 export default handler;
