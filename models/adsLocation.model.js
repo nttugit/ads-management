@@ -9,8 +9,8 @@ const AdsLocationSchema = new Schema(
             ref: 'Address',
             requried: true,
         },
-        locationType: { type: Schema.Types.ObjectId, ref: 'LocationType' },
-        adsCategory: { type: Schema.Types.ObjectId, ref: 'AdsCategory' },
+        locationType: { type: Schema.Types.ObjectId, ref: 'location_type' },
+        adsCategory: { type: Schema.Types.ObjectId, ref: 'ads_category' },
         isPlanned: { type: Boolean, default: false }, // Quy hoạch
         editVersion: { type: Number, default: 1 },
         /**

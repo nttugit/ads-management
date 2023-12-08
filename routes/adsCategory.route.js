@@ -1,16 +1,16 @@
 import express from 'express';
 const router = express.Router();
-import adsCategoryController from '../controllers/adsCategory.controller.js';
+import controller from '../controllers/adsCategory.controller.js';
 
 // Lấy danh sách địa điểm đặt quảng cáo
-router.get('/', adsCategoryController.getAdsCategories);
+router.get('/', controller.getAdsCategories);
 // Lấy thông tin chi tiết
-router.get('/:id', adsCategoryController.getAdsCategory);
+router.get('/:id', controller.getAdsCategory);
 // Tạo
-router.post('/', adsCategoryController.postAdsCategory);
+router.post('/', controller.postAdsCategory);
 // Cập nhật
-router.patch('/:id', adsCategoryController.patchAdsCategory);
+router.patch('/:id', controller.patchAdsCategory);
 // Xoá
-router.delete('/:id', adsCategoryController.deleteAdsCategory);
+router.delete('/:id', controller.deleteAdsCategory);
 
 export default router;
