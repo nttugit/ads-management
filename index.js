@@ -17,7 +17,7 @@ import './utils/db.js';
 // import adsLocationRouter from './routes/adsLocation.route.js';
 import adsCategoryRouter from './routes/adsCategory.route.js';
 import locationTypeRouter from './routes/locationType.route.js';
-// import billboardTypeRouter from './routes/billboardType.route.js';
+import billboardTypeRouter from './routes/billboardType.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
@@ -45,7 +45,7 @@ app.use(express.json());
 app.use('/ads-categories', adsCategoryRouter);
 // Loại địa điểm
 app.use('/location-types', locationTypeRouter);
-// app.use('/billboard-types', billboardTypeRouter);
+app.use('/billboard-types', billboardTypeRouter);
 
 // Ví dụ cách response đúng
 app.get('/', (req, res) => {
