@@ -4,14 +4,14 @@ const Schema = mongoose.Schema;
 
 const AddressSchema = new Schema(
     {
-        lat: Number,
-        long: Number,
-        streetLine1: String,
-        streetLine2: String,
+        lat: Number, // 10.7628318017954,
+        long: Number, // 106.68235654416593,
+        streetLine1: { type: String, default: '' }, // "Nguyễn Văn Cừ",
+        streetLine2: { type: String, default: '' }, // "227",
         ward: String,
         district: String,
         city: String,
-        country: String,
+        country: { type: String, default: '' },
     },
     { versionKey: false },
 );

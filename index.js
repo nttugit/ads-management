@@ -14,7 +14,7 @@ import './utils/db.js';
 // Sử dụng routes ở đây
 // import userRouter from './routes/user.route.js';
 // import authRouter from './routes/auth.route.js';
-// import adsLocationRouter from './routes/adsLocation.route.js';
+import adsLocationRouter from './routes/adsLocation.route.js';
 import adsCategoryRouter from './routes/adsCategory.route.js';
 import locationTypeRouter from './routes/locationType.route.js';
 import billboardTypeRouter from './routes/billboardType.route.js';
@@ -28,7 +28,7 @@ app.use(express.json());
 // app.use('/users', userRouter);
 
 // Địa điểm đặt biển quảng cáo
-// app.use('/ads-locations', adsLocationRouter);
+app.use('/ads-locations', adsLocationRouter);
 
 // Biển quảng cáo
 // app.use('/ads', adsRouter);

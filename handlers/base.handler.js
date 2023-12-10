@@ -16,9 +16,9 @@ class BaseHandler {
         this.Model = model;
     }
 
-    async getById(id, projection = {}) {
+    async getById(id, projection = {}, populate = []) {
         // projection is object or string
-        return this.Model.findById(id, projection);
+        return this.Model.findById(id, projection).populate(populate);
     }
 
     async getOne(conditions = {}, projection = {}) {
@@ -41,25 +41,29 @@ class BaseHandler {
             skip: 0,
             limit: 50,
         },
+        populate = [],
     ) {
         const skip = pagination.page * pagination.size - pagination.size;
         return this.Model.find(conditions, projection, {
             skip,
             limit: pagination.size,
-        });
+        }).populate(populate);
     }
 
     async create(data = {}) {
         return this.Model.create(data);
     }
 
-    /**
-     * @dev Soft delete (chỉ cập nhật trạng thái, không xoá hẳn)
-     * @param {*} id
-     * @returns Cập nhật và trả về dữ liệu mới
-     */
     async updateById(id, data) {
         return this.Model.findOneAndUpdate({ _id: id }, data, { new: true });
+    }
+
+    async updateAndReturn(conditions = {}, data, populate = []) {
+        return this.Model.findOneAndUpdate(conditions, data, {
+            new: true,
+        })
+            .populate(populate)
+            .exec();
     }
 
     /**

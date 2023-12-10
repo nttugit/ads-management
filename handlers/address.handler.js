@@ -1,9 +1,9 @@
 import BaseHandler from './base.handler.js';
-import AdsLocationModel from '../models/adsLocation.model.js';
+import AddressModel from '../models/address.model.js';
 
 class Handler extends BaseHandler {
     constructor() {
-        super(AdsLocationModel);
+        super(AddressModel);
     }
 }
 
