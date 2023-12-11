@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import AddressModel from './address.model.js';
 
 const Schema = mongoose.Schema;
 
@@ -22,16 +23,20 @@ const AdsLocationSchema = new Schema(
         isPlanned: { type: Boolean, default: false }, // Quy hoạch
         editVersion: { type: Number, default: 1 },
         /**
-         * 0: Còn trống,
+         * 0: Ngưng hoạt động,
          * 1: Đang hoạt động,
-         * 2: Chờ cấp phép,
-         * 3: Ẩn,
-         * -1: Đã xoá (không còn sài chỗ này nữa)}
+         * -1: Đã xoá (Nếu soft delete)
          */
-        status: { type: Number, enum: [0, 1, 2, 3, -1], default: 0 },
+        status: { type: Number, enum: [0, 1, -1], default: 1 },
     },
-    { versionKey: false },
+    { versionKey: false, timestamps: true },
 );
+
+// Middleware để xoá những thứ liên quan đến ads location
+AdsLocationSchema.post('findOneAndDelete', async function (doc, next) {
+    await AddressModel.deleteOne({ _id: doc.address });
+    next();
+});
 
 const Model = mongoose.model('ads_location', AdsLocationSchema);
 

@@ -58,12 +58,20 @@ class BaseHandler {
         return this.Model.findOneAndUpdate({ _id: id }, data, { new: true });
     }
 
+    async updateById(id, data) {
+        return this.Model.findOneAndUpdate({ _id: id }, data, { new: true });
+    }
+
     async updateAndReturn(conditions = {}, data, populate = []) {
         return this.Model.findOneAndUpdate(conditions, data, {
             new: true,
         })
             .populate(populate)
             .exec();
+    }
+
+    async updateMany(conditions = {}, data) {
+        return this.Model.updateMany(conditions, data);
     }
 
     /**
@@ -81,6 +89,14 @@ class BaseHandler {
 
     async deleteById(id) {
         return this.Model.deleteOne({ _id: id });
+    }
+
+    async deleteAndReturn(conditions = {}) {
+        return this.Model.findOneAndDelete(conditions);
+    }
+
+    async deleteMany(conditions = {}) {
+        return this.Model.deleteMany(conditions);
     }
 
     // others

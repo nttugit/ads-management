@@ -14,9 +14,10 @@ import './utils/db.js';
 // Sử dụng routes ở đây
 // import userRouter from './routes/user.route.js';
 // import authRouter from './routes/auth.route.js';
-import adsLocationRouter from './routes/adsLocation.route.js';
 import adsCategoryRouter from './routes/adsCategory.route.js';
 import locationTypeRouter from './routes/locationType.route.js';
+import adsLocationRouter from './routes/adsLocation.route.js';
+import adsRouter from './routes/ads.route.js';
 import billboardTypeRouter from './routes/billboardType.route.js';
 
 // Đảm bảo response trả về theo đúng format
@@ -29,9 +30,15 @@ app.use(express.json());
 
 // Địa điểm đặt biển quảng cáo
 app.use('/ads-locations', adsLocationRouter);
+// Hình thức quảng cáo
+app.use('/ads-categories', adsCategoryRouter);
+// Loại địa điểm
+app.use('/location-types', locationTypeRouter);
 
 // Biển quảng cáo
-// app.use('/ads', adsRouter);
+app.use('/ads', adsRouter);
+// Loại biển quảng cáo
+app.use('/billboard-types', billboardTypeRouter);
 
 // Báo cáo (tố cáo)
 // app.use('/reports', reportRouter);
@@ -40,12 +47,6 @@ app.use('/ads-locations', adsLocationRouter);
 // app.use('/stats', statsRouter);
 
 // CÁC THÀNH PHẦN KHÁC
-
-// Hình thức quảng cáo
-app.use('/ads-categories', adsCategoryRouter);
-// Loại địa điểm
-app.use('/location-types', locationTypeRouter);
-app.use('/billboard-types', billboardTypeRouter);
 
 // Ví dụ cách response đúng
 app.get('/', (req, res) => {

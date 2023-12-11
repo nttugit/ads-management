@@ -125,8 +125,9 @@ controller.patchAdsLocation = async (req, res) => {
 };
 
 controller.deleteAdsLocation = async (req, res) => {
+    // Xoá địa điểm thì xoá luôn address (set trong middleware)
     const { id } = req.params;
-    const result = await handler.deleteById(id);
+    const result = await handler.deleteAndReturn({ _id: id });
     res.status(200).json(RESPONSE.SUCCESS(result, 'deleted'));
 };
 
