@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors'
 
 // Thư viện để sài biến môi trường
 import dotenv from 'dotenv';
@@ -24,6 +25,9 @@ import billboardTypeRouter from './routes/billboardType.route.js';
 import RESPONSE from './constants/response.js';
 
 app.use(express.json());
+app.use(cors());
+app.use(express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 
 // app.use('/auth', authRouter);
 // app.use('/users', userRouter);
