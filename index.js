@@ -1,4 +1,5 @@
 import express from 'express';
+import morgan from 'morgan';
 
 // Thư viện để sài biến môi trường
 import dotenv from 'dotenv';
@@ -24,6 +25,7 @@ import billboardTypeRouter from './routes/billboardType.route.js';
 import RESPONSE from './constants/response.js';
 
 app.use(express.json());
+app.use(morgan('dev'));
 
 // app.use('/auth', authRouter);
 // app.use('/users', userRouter);
