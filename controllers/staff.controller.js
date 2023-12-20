@@ -1,5 +1,6 @@
 import RESPONSE from '../constants/response.js';
 import Handler from '../handlers/staff.handler.js';
+import { hashPassword } from '../utils/auth.js';
 const handler = new Handler();
 const controller = {};
 
@@ -34,8 +35,11 @@ controller.getAStaff = async (req, res) => {
 
 controller.updateInfo = async (req, res) => {
     const data = req.body;
-    console.log('data', data);
-    console.log('req.staff', req.staff);
+    // Nếu cập nhật mật khẩu thì cần phải hash
+    if (data?.password) {
+        const hashedPassword = hashPassword(data.password);
+        data.password = hashedPassword;
+    }
     const projection = '-password -refreshToken -createdAt -updatedAt';
     const resp = await handler.updateAndReturn(
         {
