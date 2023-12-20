@@ -36,8 +36,8 @@ controller.getAdsLocation = async (req, res) => {
     const { id } = req.params;
     const populate = [
         { path: 'address' },
-        { path: 'adsCategory', select: '-_id' },
-        { path: 'locationType', select: '-_id' },
+        { path: 'adsCategory'},
+        { path: 'locationType'},
     ];
     const adsLocation = await handler.getById(id, {}, populate);
     // Nhớ return khi muốn kết thúc
