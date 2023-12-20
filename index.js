@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors'
+import morgan from 'morgan';
 
 // Thư viện để sài biến môi trường
 import dotenv from 'dotenv';
@@ -12,14 +13,17 @@ const port = process.env.PORT || 3000;
 // Kết nối cơ sở dữ liệu
 import './utils/db.js';
 
-// Sử dụng routes ở đây
-// import userRouter from './routes/user.route.js';
-// import authRouter from './routes/auth.route.js';
+// Import routes ở đây
+import authRouter from './routes/auth.route.js';
+import staffRouter from './routes/staff.route.js';
 import adsCategoryRouter from './routes/adsCategory.route.js';
 import locationTypeRouter from './routes/locationType.route.js';
 import adsLocationRouter from './routes/adsLocation.route.js';
 import adsRouter from './routes/ads.route.js';
 import billboardTypeRouter from './routes/billboardType.route.js';
+
+// import districtRouter from './routes/district.route.js';
+// import wardRouter from './routes/ward.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
@@ -28,9 +32,12 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('uploads'))
 app.use('/uploads', express.static('uploads'))
+app.use(morgan('dev'));
 
-// app.use('/auth', authRouter);
-// app.use('/users', userRouter);
+// Xác thực
+app.use('/auth', authRouter);
+// Cán
+app.use('/staff', staffRouter);
 
 // Địa điểm đặt biển quảng cáo
 app.use('/ads-locations', adsLocationRouter);
@@ -43,6 +50,10 @@ app.use('/location-types', locationTypeRouter);
 app.use('/ads', adsRouter);
 // Loại biển quảng cáo
 app.use('/billboard-types', billboardTypeRouter);
+
+// Phường, quận
+// app.use('/districts', districtRouter);
+// app.use('/wards', wardRouter);
 
 // Báo cáo (tố cáo)
 // app.use('/reports', reportRouter);

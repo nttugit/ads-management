@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import billboardTypeController from '../controllers/billboardType.controller.js';
 
-// Lấy danh sách địa điểm đặt quảng cáo
+// Lấy danh sách
 router.get('/', billboardTypeController.getBillboardTypes);
 // Lấy thông tin chi tiết
 router.get('/:id', billboardTypeController.getBillboardType);
