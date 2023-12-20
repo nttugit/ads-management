@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import controller from '../controllers/adsCategory.controller.js';
 
-// Lấy danh sách địa điểm đặt quảng cáo
+// Lấy danh sách
 router.get('/', controller.getAdsCategories);
 // Lấy thông tin chi tiết
 router.get('/:id', controller.getAdsCategory);

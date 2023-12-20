@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import controller from '../controllers/locationType.controller.js';
 
-// Lấy danh sách địa điểm đặt quảng cáo
+// Lấy danh sách
 router.get('/', controller.getLocationTypes);
 // Lấy thông tin chi tiết
 router.get('/:id', controller.getLocationType);

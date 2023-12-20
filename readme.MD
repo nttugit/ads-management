@@ -15,3 +15,4 @@ https://hackmd.io/@nndkhoa9/rkYF2FLGT
 ## Lưu ý khác về mã nguồn:
 
 -   Có soft delete và cả hard delete
+-   Lỗi tìm không thấy dữ liệu là 204, nếu tìm không thấy user thì đó là 400

@@ -62,9 +62,15 @@ class BaseHandler {
         return this.Model.findOneAndUpdate({ _id: id }, data, { new: true });
     }
 
-    async updateAndReturn(conditions = {}, data, populate = []) {
+    async updateAndReturn(
+        conditions = {},
+        data,
+        projection = {},
+        populate = [],
+    ) {
         return this.Model.findOneAndUpdate(conditions, data, {
             new: true,
+            projection,
         })
             .populate(populate)
             .exec();

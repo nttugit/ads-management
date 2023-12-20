@@ -119,7 +119,7 @@ controller.patchAdsLocation = async (req, res) => {
     ];
     const [updateAddressResp, updateResp] = await Promise.all([
         addressHandler.updateById(adsLocation.address, addressData),
-        handler.updateAndReturn({ _id: id }, data, populate),
+        handler.updateAndReturn({ _id: id }, data, {}, populate),
     ]);
     res.status(200).json(RESPONSE.SUCCESS(updateResp, 'updated'));
 };

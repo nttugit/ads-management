@@ -114,7 +114,7 @@ controller.patchAds = async (req, res) => {
         // 2. Gỡ ảnh cũ khỏi folder uploads
         removeImages(deletedImagePaths),
         // 3. Cập nhật dữ liệu bảng quảng cáo
-        handler.updateAndReturn({ _id: id }, data, populate),
+        handler.updateAndReturn({ _id: id }, data, {}, populate),
     ]);
 
     // Cập nhật lại dữ liệu ads cho mấy bức ảnh
