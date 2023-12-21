@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors'
 import morgan from 'morgan';
 
 // Thư viện để sài biến môi trường
@@ -30,6 +31,9 @@ import reportRouter from './routes/report.route.js';
 import RESPONSE from './constants/response.js';
 
 app.use(express.json());
+app.use(cors());
+app.use(express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 app.use(morgan('dev'));
 
 // Xác thực
