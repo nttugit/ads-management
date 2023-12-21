@@ -12,7 +12,9 @@ const ImageSchema = new Schema(
         originalMimeType: String,
 
         // Thuộc biển quảng cáo nào đó
-        ads: { type: Schema.Types.ObjectId, ref: 'ads', default: null },
+        ads: { type: Schema.Types.ObjectId, ref: 'ads' },
+        // Thuộc report nào đó
+        report: { type: Schema.Types.ObjectId, ref: 'report' },
     },
     { versionKey: false },
 );

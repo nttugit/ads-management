@@ -20,6 +20,8 @@ import locationTypeRouter from './routes/locationType.route.js';
 import adsLocationRouter from './routes/adsLocation.route.js';
 import adsRouter from './routes/ads.route.js';
 import billboardTypeRouter from './routes/billboardType.route.js';
+import reportTypeRouter from './routes/reportType.route.js';
+import reportRouter from './routes/report.route.js';
 
 // import districtRouter from './routes/district.route.js';
 // import wardRouter from './routes/ward.route.js';
@@ -46,6 +48,12 @@ app.use('/location-types', locationTypeRouter);
 app.use('/ads', adsRouter);
 // Loại biển quảng cáo
 app.use('/billboard-types', billboardTypeRouter);
+
+// Loại báo cáo
+app.use('/report-types', reportTypeRouter);
+
+// Báo cáo (bao gồm báo cáo biển quảng cáo và địa điểm đặt)
+app.use('/reports', reportRouter);
 
 // Phường, quận
 // app.use('/districts', districtRouter);

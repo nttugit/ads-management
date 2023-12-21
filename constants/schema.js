@@ -1,3 +1,4 @@
+// Cán bộ
 const staffSchema = {
     type: 'object',
     properties: {
@@ -59,4 +60,16 @@ const selfUpdateStaffSchema = {
     additionalProperties: false,
 };
 
-export { staffSchema, selfUpdateStaffSchema };
+// Loại báo cáo
+const reportTypeSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+        },
+    },
+    required: ['name'],
+    additionalProperties: false,
+};
+
+export { staffSchema, selfUpdateStaffSchema, reportTypeSchema };
