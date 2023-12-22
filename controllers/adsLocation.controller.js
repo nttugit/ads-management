@@ -10,6 +10,7 @@ const controller = {};
 controller.getAdsLocations = async (req, res) => {
     const { size = 50, page = 1 } = req.query;
     const conditions = {};
+
     const pagination = { size, page };
     const populate = [
         { path: 'address' },

@@ -3,8 +3,11 @@ const router = express.Router();
 import controller from '../controllers/ads.controller.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
 
-// Lấy danh sách địa điểm đặt quảng cáo
+// Lấy danh sách
 router.get('/', controller.getAdsList);
+
+router.get('/list', controller.getAdsList);
+
 // // Lấy thông tin chi tiết
 router.get('/:id', controller.getAds);
 // Tạo
@@ -21,7 +24,7 @@ router.patch(
     resizeAndSaveImages,
     controller.patchAds,
 );
-// // Xoá
+// Xoá
 // router.delete('/:id', controller.deleteAds);
 
 export default router;

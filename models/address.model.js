@@ -13,7 +13,7 @@ const AddressSchema = new Schema(
         city: String,
         country: { type: String, default: '' },
     },
-    { versionKey: false, timestamps: true },
+    { versionKey: false },
 );
 
 const Model = mongoose.model('address', AddressSchema);

@@ -6,19 +6,124 @@ const handler = new Handler();
 const imageHandler = new ImageHandler();
 const controller = {};
 
-controller.getAdsList = async (req, res) => {
-    const { size = 50, page = 1 } = req.query;
+controller.getAll = async (req, res) => {
+    const { size = 50, page = 1, adsLocation = '', districts = '' } = req.query;
+
+    /**
+     * Lọc danh sách bảng quảng cáo, theo:
+     * - all (phân trang, cán bộ sở quản lý) - ok
+     * - theo điểm đặt (adsLocation). Ex: adsLocation=6582a9e1116affc3e7dd1d4e - ok
+     * - phường (ward) -
+     * - nhiều phường (wards) - wards=1,2,Xuân Trung
+     * - quận (district)
+     * - nhiều quận (districts) - districts=1,2,Bình Thạnh
+     * - điểm đặt (adsLocation)
+     * - tình trạng cấp phép (status)
+     *
+     *
+     *  Các fields nào cần lấy ra?
+     */
+    //
+    // theo phường, quận
+
     const conditions = {};
+    if (adsLocation) conditions['adsLocation'] = adsLocation;
+    // if(districts) conditions['']
+    console.log('conditions', conditions);
     const pagination = { size, page };
     const populate = [
         { path: 'billboardType', select: '-_id' },
-        { path: 'adsLocation', select: '-_id' },
+        { path: 'adsLocation' },
         { path: 'images', select: '-_id' },
     ];
 
     const data = await handler.getList(conditions, {}, pagination, populate);
     const totalItems = await handler.count(conditions);
     // const {size}
+    res.status(200).json(
+        RESPONSE.SUCCESS(data, 'get sucessfully', {
+            pagination: {
+                totalItems, // Total number of items available
+                itemsPerPage: size, // Number of items per page
+                currentPage: page, // The current page being returned
+                totalPages: Math.ceil(totalItems / size),
+            },
+        }),
+    );
+};
+
+controller.getAdsList = async (req, res) => {
+    const {
+        size = 50,
+        page = 1,
+        adsLocation = '',
+        wards = [],
+        districts = [],
+        status = -99,
+    } = req.query;
+    let data = [];
+    let totalItems = 0;
+    /**
+     * Lọc danh sách bảng quảng cáo, theo:
+     * - all (phân trang, cán bộ sở quản lý) - ok
+     * - theo điểm đặt (adsLocation). Ex: adsLocation=6582a9e1116affc3e7dd1d4e - ok
+     * -  phường (wards) - wards=1;;2;;Xuân Trung - ok
+     * -  quận (districts) - districts=1;;2;;Bình Thạnh - ok
+     * - tình trạng cấp phép (status)
+     *
+     *
+     */
+    //
+    // theo phường, quận
+
+    // Filter danh sách Ads theo location
+    const pagination = { size, page };
+    const populate = [
+        { path: 'billboardType', select: '-_id' },
+        {
+            path: 'adsLocation',
+            select: '-status -editVersion -createdAt -updatedAt',
+            populate: [
+                {
+                    path: 'address',
+                    select: '-_id',
+                },
+                {
+                    path: 'adsCategory',
+                    select: '-_id',
+                },
+            ],
+        },
+        { path: 'images', select: '-_id', select: '-ads' },
+    ];
+    // const projection = '-status -editVersion -createdAt -updatedAt';
+    const projection = {
+        status: 0,
+        editVersion: 0,
+        createdAt: 0,
+        updatedAt: 0,
+    };
+    const conditions = {};
+    if (status != -99) conditions['status'] = status;
+    // Lọc theo QUẬN, PHƯỜNG
+    if (districts.length > 0) {
+        conditions['districts'] = districts.split(';;');
+        if (wards.length > 0) conditions['wards'] = wards.split(';;');
+
+        data = await handler.getAdsByAreas(conditions, projection, pagination);
+        totalItems = await handler.countAdsByAreas(conditions);
+    } else {
+        // LỌC THEO ĐỊA ĐIỂM
+        if (adsLocation) conditions['adsLocation'] = adsLocation;
+        data = await handler.getList(
+            conditions,
+            projection,
+            pagination,
+            populate,
+        );
+        totalItems = await handler.count(conditions);
+    }
+
     res.status(200).json(
         RESPONSE.SUCCESS(data, 'get sucessfully', {
             pagination: {
