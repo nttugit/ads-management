@@ -13,7 +13,13 @@ controller.getAdsLocations = async (req, res) => {
 
     const pagination = { size, page };
     const populate = [
-        { path: 'address' },
+        {
+            path: 'address',
+            populate: [
+                { path: 'ward', select: 'name' },
+                { path: 'district', select: 'name' },
+            ],
+        },
         { path: 'adsCategory', select: '-_id' },
         { path: 'locationType', select: '-_id' },
     ];
@@ -35,10 +41,17 @@ controller.getAdsLocations = async (req, res) => {
 
 controller.getAdsLocation = async (req, res) => {
     const { id } = req.params;
+    console.log('id', id);
     const populate = [
-        { path: 'address' },
-        { path: 'adsCategory'},
-        { path: 'locationType'},
+        {
+            path: 'address',
+            populate: [
+                { path: 'ward', select: 'name' },
+                { path: 'district', select: 'name' },
+            ],
+        },
+        { path: 'adsCategory' },
+        { path: 'locationType' },
     ];
     const adsLocation = await handler.getById(id, {}, populate);
     // Nhớ return khi muốn kết thúc

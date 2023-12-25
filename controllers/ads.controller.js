@@ -87,6 +87,10 @@ controller.getAdsList = async (req, res) => {
                 {
                     path: 'address',
                     select: '-_id',
+                    populate: [
+                        { path: 'ward', select: 'name -_id' },
+                        { path: 'district', select: 'name -_id' },
+                    ],
                 },
                 {
                     path: 'adsCategory',
@@ -94,7 +98,7 @@ controller.getAdsList = async (req, res) => {
                 },
             ],
         },
-        { path: 'images', select: '-_id', select: '-ads' },
+        { path: 'images', select: '-_id -ads' },
     ];
     // const projection = '-status -editVersion -createdAt -updatedAt';
     const projection = {
@@ -139,16 +143,23 @@ controller.getAdsList = async (req, res) => {
 controller.getAds = async (req, res) => {
     const { id } = req.params;
     const populate = [
-        { path: 'billboardType'},
+        { path: 'billboardType', select: '-_id' },
         {
             path: 'adsLocation',
             populate: [
-                { path: 'address' },
-                { path: 'adsCategory' },
-                { path: 'locationType' },
+                {
+                    path: 'address',
+                    select: '-_id',
+                    populate: [
+                        { path: 'ward', select: 'name -_id' },
+                        { path: 'district', select: 'name -_id' },
+                    ],
+                },
+                { path: 'adsCategory', select: '-_id' },
+                { path: 'locationType', select: '-_id' },
             ],
         },
-        { path: 'images', select: '-_id' },
+        { path: 'images', select: '-_id -ads' },
     ];
 
     const Ads = await handler.getById(id, {}, populate);
@@ -178,14 +189,13 @@ controller.postAds = async (req, res) => {
 
         res.status(200).json(RESPONSE.SUCCESS(newAds, 'created'));
     } catch (error) {
-        res.status(500).json(RESPONSE.FAILURE(500, error))
+        res.status(500).json(RESPONSE.FAILURE(500, error));
     }
 };
 
 controller.patchAds = async (req, res) => {
     // Todo: validate
     try {
-
         const { id } = req.params;
         const ads = await handler.getById(id, 'images');
 
@@ -198,9 +208,14 @@ controller.patchAds = async (req, res) => {
         // Nếu có ảnh thì xoá dữ liệu ảnh cũ, rồi cập nhật lại
         if (imageIds.length > 0) {
             data.images = imageIds;
-            const adsImages = await imageHandler.getAll({ ads: id }, { path: 1 });
+            const adsImages = await imageHandler.getAll(
+                { ads: id },
+                { path: 1 },
+            );
             adsImages.forEach((image) => {
-                deletedImagePaths.push(image.path.substring(2, image.path.length));
+                deletedImagePaths.push(
+                    image.path.substring(2, image.path.length),
+                );
             });
         }
 
@@ -240,7 +255,7 @@ controller.patchAds = async (req, res) => {
 
         res.status(200).json(RESPONSE.SUCCESS(updateResp, 'updated'));
     } catch (error) {
-        res.status(500).json(RESPONSE.FAILURE(500, error))
+        res.status(500).json(RESPONSE.FAILURE(500, error));
     }
 };
 
