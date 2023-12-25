@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors'
+import cors from 'cors';
 import morgan from 'morgan';
 
 // Thư viện để sài biến môi trường
@@ -24,16 +24,16 @@ import billboardTypeRouter from './routes/billboardType.route.js';
 import reportTypeRouter from './routes/reportType.route.js';
 import reportRouter from './routes/report.route.js';
 
-// import districtRouter from './routes/district.route.js';
-// import wardRouter from './routes/ward.route.js';
+import districtRouter from './routes/district.route.js';
+import wardRouter from './routes/ward.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static('uploads'))
-app.use('/uploads', express.static('uploads'))
+app.use(express.static('uploads'));
+app.use('/uploads', express.static('uploads'));
 app.use(morgan('dev'));
 
 // Xác thực
@@ -60,8 +60,8 @@ app.use('/report-types', reportTypeRouter);
 app.use('/reports', reportRouter);
 
 // Phường, quận
-// app.use('/districts', districtRouter);
-// app.use('/wards', wardRouter);
+app.use('/districts', districtRouter);
+app.use('/wards', wardRouter);
 
 // Báo cáo (tố cáo)
 // app.use('/reports', reportRouter);

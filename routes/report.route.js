@@ -19,20 +19,15 @@ router.post(
 
 // BÁO CÁO ĐỊA ĐIỂM ĐẶT (Ads Locatio Report)
 
-// router.post(
-//     '/ads-location/:id',
-//     // upload.array('images'),
-//     // resizeAndSaveImages,
-//     controller.postAds,
-// );
-// // Cập nhật
-// router.patch(
-//     '/:id',
-//     upload.array('images'),
-//     resizeAndSaveImages,
-//     controller.patchAds,
-// );
-// // Xoá
-// router.delete('/:id', controller.deleteAds);
+// Lấy danh sách báo cáo điểm đặt
+router.get('/ads-location', controller.getAdsLocationReports);
+
+// Tạo báo cáo cho Điểm đặt
+router.post(
+    '/ads-location',
+    upload.array('images'),
+    resizeAndSaveImages,
+    controller.postAdsLocationReport,
+);
 
 export default router;

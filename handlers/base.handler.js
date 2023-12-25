@@ -1,4 +1,5 @@
 // Định nghĩa Class cha có các hàm CRUD cho tất cả các model
+// projection để mặc định là object, có thể truyền kiểu string
 
 /**
  * @typedef {import('mongoose').Document} BaseModelDocument
@@ -17,12 +18,23 @@ class BaseHandler {
     }
 
     async getById(id, projection = {}, populate = []) {
-        // projection is object or string
-        return this.Model.findById(id, projection).populate(populate);
+        try {
+            const result = await this.Model.findById(id, projection).populate(
+                populate,
+            );
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async getOne(conditions = {}, projection = {}) {
-        return this.Model.findOne(conditions, projection);
+        try {
+            const result = await this.Model.findOne(conditions, projection);
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     /**
@@ -31,7 +43,12 @@ class BaseHandler {
      * @returns Lấy hết không giới hạn
      */
     async getAll(conditions = {}, projection = {}) {
-        return this.Model.find(conditions, projection);
+        try {
+            const result = await this.Model.find(conditions, projection);
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async getList(
@@ -44,22 +61,37 @@ class BaseHandler {
         populate = [],
     ) {
         const skip = pagination.page * pagination.size - pagination.size;
-        return this.Model.find(conditions, projection, {
-            skip,
-            limit: pagination.size,
-        }).populate(populate);
+        try {
+            const result = await this.Model.find(conditions, projection, {
+                skip,
+                limit: pagination.size,
+            }).populate(populate);
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async create(data = {}) {
-        return this.Model.create(data);
+        try {
+            const newInstance = await this.Model.create(data);
+            return newInstance;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async updateById(id, data) {
-        return this.Model.findOneAndUpdate({ _id: id }, data, { new: true });
-    }
-
-    async updateById(id, data) {
-        return this.Model.findOneAndUpdate({ _id: id }, data, { new: true });
+        try {
+            const result = await this.Model.findOneAndUpdate(
+                { _id: id },
+                data,
+                { new: true },
+            );
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async updateAndReturn(
@@ -68,16 +100,26 @@ class BaseHandler {
         projection = {},
         populate = [],
     ) {
-        return this.Model.findOneAndUpdate(conditions, data, {
-            new: true,
-            projection,
-        })
-            .populate(populate)
-            .exec();
+        try {
+            const result = await this.Model.findOneAndUpdate(conditions, data, {
+                new: true,
+                projection,
+            })
+                .populate(populate)
+                .exec();
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async updateMany(conditions = {}, data) {
-        return this.Model.updateMany(conditions, data);
+        try {
+            const result = await this.Model.updateMany(conditions, data);
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     /**
@@ -86,29 +128,55 @@ class BaseHandler {
      * @returns
      */
     async deleteSoftlyById(id) {
-        return this.Model.findOneAndUpdate(
-            { _id: id },
-            { status: -1 },
-            { new: true },
-        );
+        try {
+            const result = await this.Model.findOneAndUpdate(
+                { _id: id },
+                { status: -1 },
+                { new: true },
+            );
+
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async deleteById(id) {
-        return this.Model.deleteOne({ _id: id });
+        try {
+            const result = await this.Model.deleteOne({ _id: id });
+
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async deleteAndReturn(conditions = {}) {
-        return this.Model.findOneAndDelete(conditions);
+        try {
+            const result = await this.Model.findOneAndDelete(conditions);
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     async deleteMany(conditions = {}) {
-        return this.Model.deleteMany(conditions);
+        try {
+            const result = await this.Model.deleteMany(conditions);
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 
     // others
     async count(conditions = {}) {
-        return this.Model.countDocuments(conditions);
+        try {
+            const result = await this.Model.countDocuments(conditions);
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
     }
 }
-
 export default BaseHandler;

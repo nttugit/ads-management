@@ -60,6 +60,47 @@ const selfUpdateStaffSchema = {
     additionalProperties: false,
 };
 
+// Phường
+const wardSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+        },
+        staff: {
+            type: 'string',
+        },
+        appointmentDate: {
+            // todo: pattern here
+            type: 'string',
+        },
+        district: {
+            type: 'string',
+        },
+    },
+    // required: ['name'],
+    additionalProperties: false,
+};
+
+// Quận
+const districtSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+        },
+        staff: {
+            type: 'string',
+        },
+        appointmentDate: {
+            // todo: pattern here
+            type: 'string',
+        },
+    },
+    // required: ['name'],
+    additionalProperties: false,
+};
+
 // Loại báo cáo
 const reportTypeSchema = {
     type: 'object',
@@ -72,4 +113,10 @@ const reportTypeSchema = {
     additionalProperties: false,
 };
 
-export { staffSchema, selfUpdateStaffSchema, reportTypeSchema };
+export {
+    staffSchema,
+    selfUpdateStaffSchema,
+    reportTypeSchema,
+    wardSchema,
+    districtSchema,
+};

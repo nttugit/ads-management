@@ -53,7 +53,7 @@ controller.getAdsLocationReports = async (req, res) => {
     const pagination = { size, page };
     const populate = [
         { path: 'report', select: '-_id' },
-        { path: 'ads', select: '-_id' },
+        { path: 'adsLocation', select: '-_id -createdAt -updatedAt' },
     ];
 
     const data = await adsLocationReportHandler.getList(
@@ -143,74 +143,62 @@ controller.postAdsReport = async (req, res) => {
     ]);
 
     res.status(201).json(
-        RESPONSE.SUCCESS({
-            report: newReport,
-            adsReport: newAdsReport,
-        }),
+        RESPONSE.SUCCESS(
+            {
+                report: newReport,
+                adsReport: newAdsReport,
+            },
+            'create successfully',
+        ),
     );
 };
 
-// controller.patchAds = async (req, res) => {
-//     // Todo: validate
-//     const { id } = req.params;
-//     const ads = await handler.getById(id, 'images');
+controller.postAdsLocationReport = async (req, res) => {
+    /**
+     * 1. Tạo report
+     * 2. Cập nhật Ads Location Report và Image
+     *
+     */
+    // Todo: validate
+    const { adsLocationId, reportType, fullName, email, phone, content } =
+        req.body;
+    const imageIds = req.imageIds || [];
 
-//     if (!ads) return res.status(204).end();
-//     const data = req.body;
-//     const imageIds = req.imageIds || [];
-//     const deletedImageIds = ads.images;
-//     const deletedImagePaths = [];
+    // Tạo report
+    const newReport = await reportHandler.create({
+        reportType,
+        fullName,
+        email,
+        phone,
+        content,
+        images: imageIds,
+    });
+    if (!newReport)
+        res.status(400).json(RESPONSE.FAILURE(400, 'something wrong'));
 
-//     // Nếu có ảnh thì xoá dữ liệu ảnh cũ, rồi cập nhật lại
-//     if (imageIds.length > 0) {
-//         data.images = imageIds;
-//         const adsImages = await imageHandler.getAll({ ads: id }, { path: 1 });
-//         adsImages.forEach((image) => {
-//             deletedImagePaths.push(image.path.substring(2, image.path.length));
-//         });
-//     }
+    // Cập nhật ảnh thuộc report này và tạo mới Ads Report
+    const [updateImage, newAdsLocationReport] = await Promise.all([
+        imageHandler.updateMany(
+            { _id: { $in: imageIds } },
+            {
+                report: newReport._id,
+            },
+        ),
+        adsLocationReportHandler.create({
+            report: newReport._id,
+            adsLocation: adsLocationId,
+        }),
+    ]);
 
-//     const populate = [
-//         { path: 'billboardType', select: '-_id' },
-//         { path: 'adsLocation', select: '-_id' },
-//         { path: 'images', select: '-_id' },
-//     ];
-//     /**
-//      * 1. Xoá images khỏi database
-//      * 2. Xoá images khỏi uploads folder
-//      * 3. Cập nhật dữ liệu mới cho ads
-//      * 4. Cập nhật ads cho images
-//      */
-//     console.log('deletedImagePaths', deletedImagePaths);
-//     const [, , updateResp] = await Promise.all([
-//         // 1. Xoá ảnh cũ khỏi database
-//         imageHandler.deleteMany({
-//             _id: { $in: deletedImageIds },
-//         }),
-//         // 2. Gỡ ảnh cũ khỏi folder uploads
-//         removeImages(deletedImagePaths),
-//         // 3. Cập nhật dữ liệu bảng quảng cáo
-//         handler.updateAndReturn({ _id: id }, data, {}, populate),
-//     ]);
-
-//     // Cập nhật lại dữ liệu ads cho mấy bức ảnh
-//     if (updateResp) {
-//         // Cập nhật ảnh thuộc bảng quảng cáo nào đó
-//         await imageHandler.updateMany(
-//             { _id: { $in: imageIds } },
-//             {
-//                 ads: id,
-//             },
-//         );
-//     }
-
-//     res.status(200).json(RESPONSE.SUCCESS(updateResp, 'updated'));
-// };
-
-// controller.deleteAds = async (req, res) => {
-//     const { id } = req.params;
-//     const result = await handler.deleteById(id);
-//     res.status(200).json(RESPONSE.SUCCESS(result, 'deleted'));
-// };
+    res.status(201).json(
+        RESPONSE.SUCCESS(
+            {
+                report: newReport,
+                adsLocationReport: newAdsLocationReport,
+            },
+            'create successfully',
+        ),
+    );
+};
 
 export default controller;
