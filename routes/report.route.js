@@ -22,6 +22,9 @@ router.post(
 // Lấy danh sách báo cáo điểm đặt
 router.get('/ads-location', controller.getAdsLocationReports);
 
+// Lấy thông tin chi tiết
+router.get('/ads-location/:id', controller.getAdsLocationReport);
+
 // Tạo báo cáo cho Điểm đặt
 router.post(
     '/ads-location',

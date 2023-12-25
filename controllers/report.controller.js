@@ -52,8 +52,38 @@ controller.getAdsLocationReports = async (req, res) => {
     const conditions = {};
     const pagination = { size, page };
     const populate = [
-        { path: 'report', select: '-_id' },
-        { path: 'adsLocation', select: '-_id -createdAt -updatedAt' },
+        {
+            path: 'report',
+            select: '-_id',
+            populate: [
+                { path: 'reportType', select: '-_id' },
+                {
+                    path: 'images',
+                    select: '-_id -report',
+                },
+            ],
+        },
+        {
+            path: 'adsLocation',
+            select: '-_id -createdAt -updatedAt',
+            populate: [
+                {
+                    path: 'address',
+                    populate: [
+                        { path: 'ward', select: 'name -_id' },
+                        { path: 'district', select: 'name -_id' },
+                    ],
+                },
+                {
+                    path: 'locationType',
+                    select: '-_id',
+                },
+                {
+                    path: 'adsCategory',
+                    select: '-_id',
+                },
+            ],
+        },
     ];
 
     const data = await adsLocationReportHandler.getList(
@@ -93,10 +123,39 @@ controller.getAdsReport = async (req, res) => {
 controller.getAdsLocationReport = async (req, res) => {
     const { id } = req.params;
     const populate = [
-        { path: 'report', select: '-_id' },
-        { path: 'ads', select: '-_id' },
+        {
+            path: 'report',
+            select: '-_id',
+            populate: [
+                { path: 'reportType', select: '-_id' },
+                {
+                    path: 'images',
+                    select: '-_id -report',
+                },
+            ],
+        },
+        {
+            path: 'adsLocation',
+            select: '-_id -createdAt -updatedAt',
+            populate: [
+                {
+                    path: 'address',
+                    populate: [
+                        { path: 'ward', select: 'name -_id' },
+                        { path: 'district', select: 'name -_id' },
+                    ],
+                },
+                {
+                    path: 'locationType',
+                    select: '-_id',
+                },
+                {
+                    path: 'adsCategory',
+                    select: '-_id',
+                },
+            ],
+        },
     ];
-
     const Ads = await adsLocationReportHandler.getById(id, {}, populate);
     // Nhớ return khi muốn kết thúc
     if (!Ads) return res.status(204).send();
