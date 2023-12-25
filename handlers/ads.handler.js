@@ -22,16 +22,23 @@ class Handler extends BaseHandler {
         const skip = pagination.page * pagination.size - pagination.size;
         if (conditions?.wards) {
             addressFilter.push({
-                $in: ['$ward', conditions.wards],
+                $in: [
+                    '$ward',
+                    conditions.wards.map((ward) => new ObjectId(ward)),
+                ],
             });
         }
         if (conditions?.districts) {
             addressFilter.push({
-                $in: ['$district', conditions.districts],
+                $in: [
+                    '$district',
+                    conditions.districts.map(
+                        (district) => new ObjectId(district),
+                    ),
+                ],
             });
         }
         if (conditions?.status) filter['status'] = parseInt(conditions.status);
-        console.log('filter', filter);
         return this.Model.aggregate([
             {
                 $match: {
@@ -53,6 +60,7 @@ class Handler extends BaseHandler {
                                 },
                             },
                         },
+                        // address
                         {
                             $lookup: {
                                 from: 'addresses',
@@ -83,8 +91,64 @@ class Handler extends BaseHandler {
                                             },
                                         },
                                     },
-                                    //   { $project: { rarity: 1 } },
-                                    //   { $limit: 1 },
+                                    // ward
+                                    {
+                                        $lookup: {
+                                            from: 'wards',
+                                            let: { ward: '$ward' },
+                                            pipeline: [
+                                                {
+                                                    $match: {
+                                                        $expr: {
+                                                            $eq: [
+                                                                '$_id',
+                                                                '$$ward',
+                                                            ],
+                                                        },
+                                                    },
+                                                },
+                                                {
+                                                    $project: {
+                                                        name: 1,
+                                                        _id: 0,
+                                                    },
+                                                },
+                                            ],
+                                            as: 'ward',
+                                        },
+                                    },
+                                    {
+                                        $unwind: '$ward',
+                                    },
+                                    // district
+                                    {
+                                        $lookup: {
+                                            from: 'districts',
+                                            let: { district: '$district' },
+                                            pipeline: [
+                                                {
+                                                    $match: {
+                                                        $expr: {
+                                                            $eq: [
+                                                                '$_id',
+                                                                '$$district',
+                                                            ],
+                                                        },
+                                                    },
+                                                },
+                                                {
+                                                    $project: {
+                                                        name: 1,
+                                                        _id: 0,
+                                                    },
+                                                },
+                                            ],
+                                            as: 'district',
+                                        },
+                                    },
+                                    {
+                                        $unwind: '$district',
+                                    },
                                 ],
                                 as: 'address',
                             },
@@ -92,6 +156,7 @@ class Handler extends BaseHandler {
                         {
                             $unwind: '$address',
                         },
+                        // adsCategory
                         {
                             $lookup: {
                                 from: 'ads_categories',
@@ -112,8 +177,27 @@ class Handler extends BaseHandler {
                         {
                             $unwind: '$adsCategory',
                         },
-                        //   { $project: { rarity: 1 } },
-                        //   { $limit: 1 },
+                        // locationType
+                        {
+                            $lookup: {
+                                from: 'location_types',
+                                let: { locationType: '$locationType' },
+                                pipeline: [
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $eq: ['$_id', '$$locationType'],
+                                            },
+                                        },
+                                    },
+                                    { $project: { _id: 0 } },
+                                ],
+                                as: 'locationType',
+                            },
+                        },
+                        {
+                            $unwind: '$locationType',
+                        },
                     ],
 
                     as: 'adsLocation',
