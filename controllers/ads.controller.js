@@ -102,7 +102,7 @@ controller.getAdsList = async (req, res) => {
     ];
     // const projection = '-status -editVersion -createdAt -updatedAt';
     const projection = {
-        status: 0,
+        // status: 0,
         editVersion: 0,
         createdAt: 0,
         updatedAt: 0,

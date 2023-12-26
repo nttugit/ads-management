@@ -1,7 +1,7 @@
-import BaseHandler from './base.handler.js';
-import AdsModel from '../models/ads.model.js';
 import mongoose from 'mongoose';
 const { ObjectId } = mongoose.Types;
+import BaseHandler from './base.handler.js';
+import AdsModel from '../models/ads.model.js';
 
 class Handler extends BaseHandler {
     constructor() {
