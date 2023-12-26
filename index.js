@@ -63,9 +63,6 @@ app.use('/reports', reportRouter);
 app.use('/districts', districtRouter);
 app.use('/wards', wardRouter);
 
-// Báo cáo (tố cáo)
-// app.use('/reports', reportRouter);
-
 // Thống kê
 // app.use('/stats', statsRouter);
 

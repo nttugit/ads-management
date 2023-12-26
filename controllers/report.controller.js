@@ -3,10 +3,14 @@ import ImageHandler from '../handlers/image.handler.js';
 import { removeImages } from '../utils/image.js';
 
 import ReportHandler from '../handlers/report.handler.js';
+import AdsHandler from '../handlers/ads.handler.js';
+import AdsLocationHandler from '../handlers/adsLocation.handler.js';
 import AdsReportHandler from '../handlers/adsReport.handler.js';
 import AdsLocationReportHandler from '../handlers/adsLocationReport.handler.js';
 
 const reportHandler = new ReportHandler();
+const adsHandler = new AdsHandler();
+const adsLocationHandler = new AdsLocationHandler();
 const adsReportHandler = new AdsReportHandler();
 const adsLocationReportHandler = new AdsLocationReportHandler();
 
@@ -166,27 +170,65 @@ controller.postAdsReport = async (req, res) => {
     /**
      * 1. Tạo report
      * 2. Cập nhật Ads Report và Image
-     *
+     * 3. Thêm phường/quận cho report luôn cho tiện truy vấn kkk
      */
     // Todo: validate
     const { adsId, reportType, fullName, email, phone, content } = req.body;
+    const ads = await adsHandler.getById(
+        adsId,
+        {
+            adsLocation: 1,
+        },
+        [
+            {
+                path: 'adsLocation',
+                select: 'address',
+                populate: [
+                    {
+                        path: 'address',
+                        select: 'district ward',
+                        populate: [
+                            { path: 'district', select: '_id' },
+                            { path: 'ward', select: '_id' },
+                        ],
+                    },
+                ],
+            },
+        ],
+    );
+    if (!ads)
+        return res.status(400).json(RESPONSE.FAILURE(400, 'ads not found'));
+    // return res.json(ads);
     const imageIds = req.imageIds || [];
     // if (imageIds.length > 0) {
     //     data.images = imageIds;
     // }
 
+    const populate = [
+        {
+            path: 'images',
+            select: '-_id',
+        },
+    ];
     // Tạo report
-    const newReport = await reportHandler.create({
+    const reportData = {
         reportType,
         fullName,
         email,
         phone,
         content,
         images: imageIds,
-    });
+        ward: ads.adsLocation.address.ward._id,
+        district: ads.adsLocation.address.district._id,
+    };
+    const newReport = await reportHandler.createAndReturn(
+        reportData,
+        {},
+        populate,
+    );
     if (!newReport)
         res.status(400).json(RESPONSE.FAILURE(400, 'something wrong'));
-
+    // console.log('newReport', newReport);
     // Cập nhật ảnh thuộc report này và tạo mới Ads Report
     const [updateImage, newAdsReport] = await Promise.all([
         imageHandler.updateMany(
@@ -224,14 +266,23 @@ controller.postAdsLocationReport = async (req, res) => {
     const imageIds = req.imageIds || [];
 
     // Tạo report
-    const newReport = await reportHandler.create({
-        reportType,
-        fullName,
-        email,
-        phone,
-        content,
-        images: imageIds,
-    });
+    const newReport = await reportHandler.createAndReturn(
+        {
+            reportType,
+            fullName,
+            email,
+            phone,
+            content,
+            images: imageIds,
+        },
+        {},
+        [
+            {
+                path: 'images',
+                select: '-_id',
+            },
+        ],
+    );
     if (!newReport)
         res.status(400).json(RESPONSE.FAILURE(400, 'something wrong'));
 

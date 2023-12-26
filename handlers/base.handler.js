@@ -81,6 +81,27 @@ class BaseHandler {
         }
     }
 
+    async createAndReturn(data = {}, projection = {}, populate = []) {
+        try {
+            // const result = await this.Model.updateOne(data, data, {
+            //     upsert: true,
+            //     new: true,
+            //     projection,
+            // })
+            //     .populate(populate)
+            //     .exec();
+            const result = await this.Model.findOneAndUpdate(data, data, {
+                upsert: true,
+                new: true,
+            })
+                .populate(populate)
+                .exec();
+            return result;
+        } catch (error) {
+            console.log('!!! MONGODB ERROR:' + error);
+        }
+    }
+
     async updateById(id, data) {
         try {
             const result = await this.Model.findOneAndUpdate(

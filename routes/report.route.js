@@ -3,7 +3,7 @@ const router = express.Router();
 import controller from '../controllers/report.controller.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
 
-// BÁO CÁO BIỂN QUẢNG CÁO (Ads Report)
+// ======== BÁO CÁO BIỂN QUẢNG CÁO (Ads Report)
 
 // Lấy danh sách báo cáo biển quảng cáo (BQC)
 router.get('/ads', controller.getAdsReports);
@@ -17,7 +17,7 @@ router.post(
     controller.postAdsReport,
 );
 
-// BÁO CÁO ĐỊA ĐIỂM ĐẶT (Ads Locatio Report)
+// ======== BÁO CÁO ĐỊA ĐIỂM ĐẶT (Ads Locatio Report)
 
 // Lấy danh sách báo cáo điểm đặt
 router.get('/ads-location', controller.getAdsLocationReports);

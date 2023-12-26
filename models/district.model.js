@@ -7,7 +7,7 @@ const DistrictSchema = new Schema(
         // Tên quận
         name: { type: String, required: true },
         // Cán bộ đảm nhiệm
-        staff: { type: Schema.Types.ObjectId, ref: 'staff', default: null },
+        // staff: { type: Schema.Types.ObjectId, ref: 'staff', default: null },
         // Ngày bổ nhiệm
         appointmentDate: { type: Date, default: null },
     },
