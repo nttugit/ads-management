@@ -20,6 +20,7 @@ controller.getAdsLocations = async (req, res) => {
     } = req.query;
     let data = [];
     let totalItems = 0;
+    let isArea = false; // Để đánh dấu xử lý có lấy areas hay không thôi
     const conditions = {};
     const projection = {
         // status: 0,
@@ -43,6 +44,7 @@ controller.getAdsLocations = async (req, res) => {
     if (status != -99) conditions['status'] = status;
 
     if (districts.length > 0) {
+        isArea = true;
         conditions['districts'] = districts.split(';;');
         if (wards.length > 0) conditions['wards'] = wards.split(';;');
         data = await handler.getAdsLocationsByAreas(
@@ -63,20 +65,22 @@ controller.getAdsLocations = async (req, res) => {
         totalItems = await handler.count(conditions);
     }
 
-    // let dataWithCountAds = await Promise.all(
-    //     data.map(async (adsLocation) => {
-    //         const countAds = await adsHandler.count({
-    //             adsLocation: adsLocation._id,
-    //         });
-    //         const adsLocationObj = adsLocation.toObject();
-    //         adsLocationObj['countAds'] = countAds;
-    //         return adsLocationObj;
-    //     }),
-    // );
+    let dataWithCountAds = await Promise.all(
+        data.map(async (adsLocation) => {
+            const countAds = await adsHandler.count({
+                adsLocation: adsLocation._id,
+            });
+            const adsLocationObj = isArea
+                ? adsLocation
+                : adsLocation.toObject();
+            adsLocationObj['countAds'] = countAds;
+            return adsLocationObj;
+        }),
+    );
 
     // const {size}
     res.status(200).json(
-        RESPONSE.SUCCESS(data, 'get sucessfully', {
+        RESPONSE.SUCCESS(dataWithCountAds, 'get sucessfully', {
             pagination: {
                 totalItems, // Total number of items available
                 itemsPerPage: size, // Number of items per page
