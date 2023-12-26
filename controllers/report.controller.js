@@ -18,7 +18,7 @@ const imageHandler = new ImageHandler();
 const controller = {};
 
 controller.getAdsReports = async (req, res) => {
-    const { size = 50, page = 1 } = req.query;
+    const { size = 50, page = 1, districts = [], wards = [] } = req.query;
     const conditions = {};
     const pagination = { size, page };
     // #todo: Giới hạn select fields
@@ -26,11 +26,21 @@ controller.getAdsReports = async (req, res) => {
         {
             path: 'report',
             select: '-_id',
-            populate: [{ path: 'images', select: '-_id' }],
+            populate: [
+                { path: 'images', select: '-_id' },
+                {
+                    path: 'reportType',
+                    select: '-_id',
+                },
+            ],
         },
         { path: 'ads', select: '-_id' },
     ];
-
+    if (districts.length > 0) {
+        conditions['district'] = { $in: districts.split(';;') };
+        if (wards.length > 0) conditions['ward'] = { $in: wards.split(';;') };
+    }
+    // console.log('conditions:', conditions);
     const data = await adsReportHandler.getList(
         conditions,
         {},
@@ -52,7 +62,7 @@ controller.getAdsReports = async (req, res) => {
 };
 
 controller.getAdsLocationReports = async (req, res) => {
-    const { size = 50, page = 1 } = req.query;
+    const { size = 50, page = 1, districts = [], wards = [] } = req.query;
     const conditions = {};
     const pagination = { size, page };
     const populate = [
@@ -89,7 +99,10 @@ controller.getAdsLocationReports = async (req, res) => {
             ],
         },
     ];
-
+    if (districts.length > 0) {
+        conditions['district'] = { $in: districts.split(';;') };
+        if (wards.length > 0) conditions['ward'] = { $in: wards.split(';;') };
+    }
     const data = await adsLocationReportHandler.getList(
         conditions,
         {},
@@ -97,7 +110,7 @@ controller.getAdsLocationReports = async (req, res) => {
         populate,
     );
     const totalItems = await adsLocationReportHandler.count(conditions);
-    // const {size}
+  
     res.status(200).json(
         RESPONSE.SUCCESS(data, 'get sucessfully', {
             pagination: {
@@ -114,8 +127,21 @@ controller.getAdsReport = async (req, res) => {
     // id: id của ads report
     const { id } = req.params;
     const populate = [
-        { path: 'report', select: '-_id' },
-        { path: 'ads', select: '-_id' },
+        {
+            path: 'report',
+            select: '-_id',
+            populate: [
+                { path: 'images', select: '-_id' },
+                {
+                    path: 'reportType',
+                    select: '-_id',
+                },
+            ],
+        },
+        {
+            path: 'ads',
+            select: '-_id',
+        },
     ];
 
     const adsReport = await adsReportHandler.getById(id, {}, populate);
@@ -209,6 +235,10 @@ controller.postAdsReport = async (req, res) => {
             path: 'images',
             select: '-_id',
         },
+        {
+            path: 'reportType',
+            select: '-_id',
+        },
     ];
     // Tạo report
     const reportData = {
@@ -218,8 +248,6 @@ controller.postAdsReport = async (req, res) => {
         phone,
         content,
         images: imageIds,
-        ward: ads.adsLocation.address.ward._id,
-        district: ads.adsLocation.address.district._id,
     };
     const newReport = await reportHandler.createAndReturn(
         reportData,
@@ -240,6 +268,8 @@ controller.postAdsReport = async (req, res) => {
         adsReportHandler.create({
             report: newReport._id,
             ads: adsId,
+            ward: ads.adsLocation.address.ward._id,
+            district: ads.adsLocation.address.district._id,
         }),
     ]);
 
@@ -263,6 +293,24 @@ controller.postAdsLocationReport = async (req, res) => {
     // Todo: validate
     const { adsLocationId, reportType, fullName, email, phone, content } =
         req.body;
+    const adsLocation = await adsLocationHandler.getById(
+        adsLocationId,
+        {
+            address: 1,
+        },
+        [
+            {
+                path: 'address',
+                select: 'district ward',
+                populate: [
+                    { path: 'district', select: '_id' },
+                    { path: 'ward', select: '_id' },
+                ],
+            },
+        ],
+    );
+    if (!adsLocation)
+        return res.status(400).json(RESPONSE.FAILURE(400, 'ads not found'));
     const imageIds = req.imageIds || [];
 
     // Tạo report
@@ -281,6 +329,10 @@ controller.postAdsLocationReport = async (req, res) => {
                 path: 'images',
                 select: '-_id',
             },
+            {
+                path: 'reportType',
+                select: '-_id',
+            },
         ],
     );
     if (!newReport)
@@ -297,6 +349,8 @@ controller.postAdsLocationReport = async (req, res) => {
         adsLocationReportHandler.create({
             report: newReport._id,
             adsLocation: adsLocationId,
+            ward: adsLocation.address.ward._id,
+            district: adsLocation.address.district._id,
         }),
     ]);
 

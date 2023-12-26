@@ -17,12 +17,6 @@ const ReportSchema = new Schema(
          * 1: Đã duyệt
          */
         status: { type: Number, enum: [-1, 0, 1], default: 0 },
-        ward: { type: Schema.Types.ObjectId, ref: 'ward', required: true }, // Thiết kế không tốt, làm cho vui
-        district: {
-            type: Schema.Types.ObjectId,
-            ref: 'district',
-            required: true,
-        }, // Thiết kế không tốt, làm cho vui
     },
     { versionKey: false, timestamps: true },
 );
