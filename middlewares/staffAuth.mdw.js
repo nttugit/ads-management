@@ -14,7 +14,7 @@ export default async (req, res, next) => {
     if (!verified) {
         return res.status(401).json(RESPONSE.FAILURE(401, 'Access denied'));
     }
-  
+
     // Kiểm tra có quyền cán bộ không
     if (!ROLES.STAFF.includes(verified?.role))
         return res.status(403).json(RESPONSE.FAILURE(403, 'Unauthorized'));
@@ -23,7 +23,7 @@ export default async (req, res, next) => {
         {
             username: verified.username,
         },
-        'username role',
+        'username role assigned',
     );
     req.staff = staff;
 

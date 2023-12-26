@@ -1,4 +1,4 @@
-// Middleware xác thực cán bộ phường
+// Middleware xác thực cán bộ PHƯỜNG
 
 import RESPONSE from '../constants/response.js';
 import StaffModel from '../models/staff.model.js';
@@ -9,12 +9,12 @@ export default async (req, res, next) => {
     if (!accessToken)
         return res.status(401).json(RESPONSE.FAILURE(401, 'Access denied'));
 
-    // Verify token
+    // Kiểm tra token hợp lệ không
     const verified = verifyToken(accessToken);
     if (!verified) {
         return res.status(401).json(RESPONSE.FAILURE(401, 'Access denied'));
     }
-
+    // Kiểm tra có role CÁN BỘ PHƯỜNG không
     if (verified?.role !== 'canbo_phuong')
         return res.status(403).json(RESPONSE.FAILURE(403, 'Unauthorized'));
 
@@ -22,7 +22,7 @@ export default async (req, res, next) => {
         {
             username: verified.username,
         },
-        'username role',
+        'username role assigned',
     );
     req.staff = staff;
 
