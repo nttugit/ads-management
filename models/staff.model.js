@@ -18,6 +18,15 @@ const StaffSchema = new Schema(
             enum: ['canbo_so', 'canbo_quan', 'canbo_phuong'],
             required: true,
         },
+        assigned: {
+            district: {
+                type: Schema.Types.ObjectId,
+                ref: 'district',
+                default: null,
+            },
+            ward: { type: Schema.Types.ObjectId, ref: 'ward', default: null },
+            appointmentDate: { type: Date, default: null },
+        },
         /**
          * -1: Đã xoá,
          * 0: Tạm ngưng hoạt động (hoặc chưa xác thực),

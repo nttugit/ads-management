@@ -12,7 +12,6 @@ controller.getWards = async (req, res) => {
     const conditions = {};
     const pagination = { size, page };
     const populate = [
-        { path: 'staff', select: 'fullName email phone' },
         {
             path: 'district',
             select: 'name',
@@ -36,7 +35,6 @@ controller.getWards = async (req, res) => {
 controller.getWard = async (req, res) => {
     const { id } = req.params;
     const populate = [
-        { path: 'staff', select: 'fullName email phone' },
         {
             path: 'district',
             select: 'name',
@@ -64,12 +62,12 @@ controller.patchWard = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     // Nếu có bổ nhiệm cán bộ thì cập nhật ngày bổ nhiệm và role cho cán bộ đó
-    if (data?.staff) {
-        data['appointmentDate'] = new Date();
-        await staffHandler.updateById(data.staff, {
-            role: 'canbo_phuong',
-        });
-    }
+    // if (data?.staff) {
+    //     data['appointmentDate'] = new Date();
+    //     await staffHandler.updateById(data.staff, {
+    //         role: 'canbo_phuong',
+    //     });
+    // }
     const updatedDistrict = await handler.updateById(id, data);
 
     res.status(200).json(RESPONSE.SUCCESS(updatedDistrict, 'updated'));

@@ -9,8 +9,7 @@ controller.getDistricts = async (req, res) => {
     const { size = 50, page = 1 } = req.query;
     const conditions = {};
     const pagination = { size, page };
-    const populate = [{ path: 'staff', select: 'fullName email phone' }];
-    const data = await handler.getList(conditions, {}, pagination, populate);
+    const data = await handler.getList(conditions, {}, pagination);
     const totalItems = await handler.count(conditions);
     // const {size}
     res.status(200).json(
@@ -27,8 +26,7 @@ controller.getDistricts = async (req, res) => {
 
 controller.getDistrict = async (req, res) => {
     const { id } = req.params;
-    const populate = [{ path: 'staff', select: 'fullName email phone' }];
-    const district = await handler.getById(id, {}, populate);
+    const district = await handler.getById(id, {});
     // Nhớ return khi muốn kết thúc
     if (!district) return res.status(204).send();
     res.status(200).json(RESPONSE.SUCCESS(district, 'get sucessfully'));
@@ -44,12 +42,12 @@ controller.patchDistrict = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     // Nếu có bổ nhiệm cán bộ thì cập nhật ngày bổ nhiệm và role cho cán bộ đó
-    if (data?.staff) {
-        data['appointmentDate'] = new Date();
-        await staffHandler.updateById(data.staff, {
-            role: 'canbo_quan',
-        });
-    }
+    // if (data?.staff) {
+    //     data['appointmentDate'] = new Date();
+    //     await staffHandler.updateById(data.staff, {
+    //         role: 'canbo_quan',
+    //     });
+    // }
     const updatedDistrict = await handler.updateById(id, data);
     res.status(200).json(RESPONSE.SUCCESS(updatedDistrict, 'updated'));
 };

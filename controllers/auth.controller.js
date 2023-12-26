@@ -1,5 +1,7 @@
 import RESPONSE from '../constants/response.js';
 import Handler from '../handlers/auth.handler.js';
+import WardHandler from '../handlers/ward.handler.js';
+import DistrictHandler from '../handlers/district.handler.js';
 import { SALT_ROUNDS } from '../constants/auth.js';
 import {
     generateToken,
@@ -11,6 +13,8 @@ import {
 } from '../utils/auth.js';
 
 const handler = new Handler();
+const wardHandler = new WardHandler();
+const districtHandler = new DistrictHandler();
 const controller = {};
 
 // controller.register = async (req, res) => {
@@ -39,7 +43,29 @@ controller.createNewAccount = async (req, res) => {
 
     const hashedPassword = hashPassword(data.password);
     data.password = hashedPassword;
-    const newStaff = await handler.create(data);
+    if (data?.assigned) {
+        if (data.assigned?.ward) {
+            // phan cong phuong
+            data['role'] = 'canbo_phuong';
+        } else {
+            // phan cong quan
+            data['role'] = 'canbo_quan';
+        }
+        data['assigned']['appointmentDate'] = new Date();
+    }
+
+    const newStaff = (await handler.create(data)).toObject();
+    if (newStaff?.role === 'canbo_phuong') {
+        await wardHandler.updateById(data.assigned?.ward, {
+            staff: newStaff._id,
+        });
+    } else if (newStaff?.role === 'canbo_quan') {
+        await districtHandler.updateById(newStaff.assigned.district, {
+            staff: newStaff._id,
+        });
+    }
+    delete newStaff['password'];
+    delete newStaff['refreshToken'];
     res.status(201).json(RESPONSE.SUCCESS(newStaff, 'created'));
 };
 
@@ -66,13 +92,12 @@ controller.assignRole = async (req, res) => {
     res.status(201).json(RESPONSE.SUCCESS(newStaff, 'created'));
 };
 
-
 controller.login = async (req, res) => {
     // Todo: validate
     const { username, password } = req.body;
     const staff = await handler.getOne(
         { username },
-        'username password role refreshToken',
+        'username password role assigned refreshToken',
     );
     if (!staff)
         return res.status(400).json(RESPONSE.FAILURE(400, 'user not found'));
@@ -83,6 +108,7 @@ controller.login = async (req, res) => {
     const accessTokenData = {
         username,
         role: staff.role,
+        assigned: staff.assigned,
     };
     const accessToken = generateToken(accessTokenData);
     let refreshToken = null;
@@ -104,6 +130,7 @@ controller.login = async (req, res) => {
                     _id: staff._id,
                     username: staff.username,
                     role: staff.role,
+                    assigned: staff.assigned,
                 },
             },
             'login successfully',

@@ -29,6 +29,9 @@ const staffSchema = {
         role: {
             type: 'string',
         },
+        assigned: {
+            type: 'object',
+        },
     },
     required: ['username', 'password'],
     additionalProperties: false,
@@ -67,13 +70,6 @@ const wardSchema = {
         name: {
             type: 'string',
         },
-        staff: {
-            type: 'string',
-        },
-        appointmentDate: {
-            // todo: pattern here
-            type: 'string',
-        },
         district: {
             type: 'string',
         },
@@ -87,13 +83,6 @@ const districtSchema = {
     type: 'object',
     properties: {
         name: {
-            type: 'string',
-        },
-        staff: {
-            type: 'string',
-        },
-        appointmentDate: {
-            // todo: pattern here
             type: 'string',
         },
     },
