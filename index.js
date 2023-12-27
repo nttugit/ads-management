@@ -10,6 +10,13 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
+app.use(express.static('uploads'));
+app.use('/uploads', express.static('uploads'));
+app.use(morgan('dev'));
+
 // Kết nối cơ sở dữ liệu
 import './utils/db.js';
 
@@ -30,12 +37,6 @@ import wardRouter from './routes/ward.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
-
-app.use(express.json());
-app.use(cors());
-app.use(express.static('uploads'));
-app.use('/uploads', express.static('uploads'));
-app.use(morgan('dev'));
 
 // Xác thực
 app.use('/auth', authRouter);
@@ -66,9 +67,6 @@ app.use('/edit-requests', editRequestRouter);
 // Phường, quận
 app.use('/districts', districtRouter);
 app.use('/wards', wardRouter);
-
-
-
 
 // Thống kê
 // app.use('/stats', statsRouter);

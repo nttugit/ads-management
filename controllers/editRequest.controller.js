@@ -1,8 +1,10 @@
 import RESPONSE from '../constants/response.js';
 import AdsEditRequestHandler from '../handlers/adsEditRequest.handler.js';
 import AdsLocationEditRequestHandler from '../handlers/adsLocationEditRequest.handler.js';
+import AddressHandler from '../handlers/address.handler.js';
 const adsEditRequestHandler = new AdsEditRequestHandler();
 const adsLocationEditRequestHandler = new AdsLocationEditRequestHandler();
+const addressHandler = new AddressHandler();
 const controller = {};
 
 // ============ ADS EDIT REQUEST
@@ -51,6 +53,11 @@ controller.postAdsEditRequest = async (req, res) => {
     // Todo: validate
     const data = req.body;
     data.sender = req.staff._id;
+    const imageIds = req.imageIds || [];
+    if (imageIds.length > 0) {
+        data.images = imageIds;
+    }
+
     const result = await adsEditRequestHandler.create(data);
     res.status(200).json(RESPONSE.SUCCESS(result, 'created'));
 };
@@ -104,11 +111,43 @@ controller.getAdsLocationEditRequest = async (req, res) => {
 controller.postAdsLocationEditRequest = async (req, res) => {
     // Todo: validate
     const data = req.body;
+    const {
+        lat,
+        long,
+        streetLine1,
+        streetLine2,
+        ward,
+        district,
+        city,
+        country,
+    } = data;
+    // Tạo thông tin địa chỉ
+    const addressData = {
+        lat,
+        long,
+        streetLine1,
+        streetLine2,
+        ward,
+        district,
+        city,
+        country,
+    };
+    // Neu co address
+    let address = null;
+    if (lat) {
+        address = await addressHandler.create(addressData);
+        // if (!address)
+        //     return res
+        //         .status(400)
+        //         .json(RESPONSE.FAILURE(400, 'bad address data'));
+    }
+
+    if (address) data['address'] = address._id;
     data.sender = req.staff._id;
     const result = await adsLocationEditRequestHandler.create(data);
     res.status(200).json(RESPONSE.SUCCESS(result, 'created'));
 };
-    
+
 // controller.patchAdsCategory = async (req, res) => {
 //     // Todo: validate
 //     const { id } = req.params;

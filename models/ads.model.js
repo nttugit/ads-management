@@ -32,7 +32,7 @@ const AdsSchema = new Schema(
          * 3: Ẩn,
          * -1: Đã xoá (không còn sài chỗ này nữa)}
          */
-        status: { type: Number, enum: [ -1, 0, 1, 2, 3], default: 0 },
+        status: { type: Number, enum: [-1, 0, 1, 2, 3], default: 0 },
     },
     { versionKey: false, timestamps: true },
 );

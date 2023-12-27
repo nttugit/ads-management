@@ -47,12 +47,15 @@ controller.createNewAccount = async (req, res) => {
         if (data.assigned?.ward) {
             // phan cong phuong
             data['role'] = 'canbo_phuong';
-        } else {
+        } else if (data.assigned?.district) {
             // phan cong quan
             data['role'] = 'canbo_quan';
+        } else {
+            data['role'] = 'canbo_so';
         }
         data['assigned']['appointmentDate'] = new Date();
     }
+    console.log('data', data);
 
     const newStaff = (await handler.create(data)).toObject();
     if (newStaff?.role === 'canbo_phuong') {
