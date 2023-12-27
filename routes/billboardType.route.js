@@ -1,16 +1,33 @@
 import express from 'express';
 const router = express.Router();
 import billboardTypeController from '../controllers/billboardType.controller.js';
+import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 
 // Lấy danh sách
-router.get('/', billboardTypeController.getBillboardTypes);
+router.get('/', departmentStaffAuth, billboardTypeController.getBillboardTypes);
 // Lấy thông tin chi tiết
-router.get('/:id', billboardTypeController.getBillboardType);
+router.get(
+    '/:id',
+    departmentStaffAuth,
+    billboardTypeController.getBillboardType,
+);
 // Tạo
-router.post('/', billboardTypeController.postBillboardType);
+router.post(
+    '/',
+    departmentStaffAuth,
+    billboardTypeController.postBillboardType,
+);
 // Cập nhật
-router.patch('/:id', billboardTypeController.patchBillboardType);
+router.patch(
+    '/:id',
+    departmentStaffAuth,
+    billboardTypeController.patchBillboardType,
+);
 // Xoá
-router.delete('/:id', billboardTypeController.deleteBillboardType);
+router.delete(
+    '/:id',
+    departmentStaffAuth,
+    billboardTypeController.deleteBillboardType,
+);
 
 export default router;

@@ -6,9 +6,9 @@ import validate from '../middlewares/validate.mdw.js';
 import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 
 // Lấy danh sách
-router.get('/', controller.getDistricts);
+router.get('/', departmentStaffAuth, controller.getDistricts);
 // Lấy thông tin chi tiết
-router.get('/:id', controller.getDistrict);
+router.get('/:id', departmentStaffAuth, controller.getDistrict);
 // Tạo
 router.post(
     '/',

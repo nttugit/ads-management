@@ -4,14 +4,14 @@ import controller from '../controllers/staff.controller.js';
 import staffAuth from '../middlewares/staffAuth.mdw.js';
 import validate from '../middlewares/validate.mdw.js';
 import { selfUpdateStaffSchema } from '../constants/schema.js';
-
+import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 // import wardStaffAuth from '../middlewares/wardStaffAuth.mdw.js';
 
 // Lấy danh sách cán bộ
-router.get('/', controller.getStaffList);
+router.get('/', departmentStaffAuth, controller.getStaffList);
 
 // Lấy thông tin chi tiết
-router.get('/:id', controller.getAStaff);
+router.get('/:id', departmentStaffAuth, controller.getAStaff);
 
 // Cán bộ tự cập nhật thông tin cá nhân
 router.patch(

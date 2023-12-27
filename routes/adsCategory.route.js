@@ -1,16 +1,17 @@
 import express from 'express';
 const router = express.Router();
 import controller from '../controllers/adsCategory.controller.js';
+import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 
 // Lấy danh sách
-router.get('/', controller.getAdsCategories);
+router.get('/', departmentStaffAuth, controller.getAdsCategories);
 // Lấy thông tin chi tiết
-router.get('/:id', controller.getAdsCategory);
+router.get('/:id', departmentStaffAuth, controller.getAdsCategory);
 // Tạo
-router.post('/', controller.postAdsCategory);
+router.post('/', departmentStaffAuth, controller.postAdsCategory);
 // Cập nhật
-router.patch('/:id', controller.patchAdsCategory);
+router.patch('/:id', departmentStaffAuth, controller.patchAdsCategory);
 // Xoá
-router.delete('/:id', controller.deleteAdsCategory);
+router.delete('/:id', departmentStaffAuth, controller.deleteAdsCategory);
 
 export default router;

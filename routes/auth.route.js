@@ -8,11 +8,17 @@ import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw..js';
 // router.post('/', authController.register);
 
 // CANBO_SO: Tạo tài khoản cho các cán bộ phường, quận
-router.post('/create', validate(staffSchema), authController.createNewAccount);
+router.post(
+    '/create',
+    departmentStaffAuth,
+    validate(staffSchema),
+    authController.createNewAccount,
+);
 
 // CANBO_SO: Phân công khu vực quản lý
 router.post(
     '/assign-role',
+    departmentStaffAuth,
     validate(staffSchema),
     departmentStaffAuth,
     authController.assignRole,
