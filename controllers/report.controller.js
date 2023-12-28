@@ -24,6 +24,7 @@ controller.getAdsReports = async (req, res) => {
         districts = [],
         wards = [],
         guestId = '',
+        status = -99,
     } = req.query;
     let districtCondition = [],
         wardCondition = [];
@@ -84,7 +85,9 @@ controller.getAdsReports = async (req, res) => {
         conditions['guestId'] = guestId;
     }
 
+    if (status !== -99) conditions['status'] = status;
     console.log('conditions:', conditions);
+
     const data = await adsReportHandler.getList(
         conditions,
         {},
