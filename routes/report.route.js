@@ -3,6 +3,7 @@ const router = express.Router();
 import controller from '../controllers/report.controller.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
 import staffAuthOptional from '../middlewares/staffAuthOptional.mdw.js';
+import wardStaffAuth from '../middlewares/wardStaffAuth.mdw.js';
 
 // ======== BÁO CÁO BIỂN QUẢNG CÁO (Ads Report)
 
@@ -20,6 +21,8 @@ router.post(
     resizeAndSaveImages,
     controller.postAdsReport,
 );
+// Cán bộ PHƯỜNG cập nhật tình trạng báo cáo
+router.patch('/ads/:id', wardStaffAuth, controller.patchAdsReport);
 
 // ======== BÁO CÁO ĐỊA ĐIỂM ĐẶT (Ads Locatio Report)
 

@@ -429,4 +429,33 @@ controller.postAdsLocationReport = async (req, res) => {
     );
 };
 
+controller.patchAdsReport = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const populate = [
+        {
+            path: 'report',
+            select: '-_id',
+            populate: [
+                { path: 'images' },
+                {
+                    path: 'reportType',
+                },
+            ],
+        },
+        {
+            path: 'ads',
+        },
+    ];
+    const result = await adsReportHandler.updateAndReturn(
+        { _id: id },
+        {
+            status,
+        },
+        {},
+        populate,
+    );
+    res.status(200).json(RESPONSE.SUCCESS(result, 'update successfully'));
+};
+
 export default controller;
