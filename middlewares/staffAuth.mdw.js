@@ -1,7 +1,7 @@
 import RESPONSE from '../constants/response.js';
 import { ROLES } from '../constants/auth.js';
 import StaffModel from '../models/staff.model.js';
-import { verifyToken, generateToken } from '../utils/auth.js';
+import { verifyToken } from '../utils/auth.js';
 
 export default async (req, res, next) => {
     const authorizationHeader = req.headers['authorization'];

@@ -2,8 +2,12 @@ import express from 'express';
 const router = express.Router();
 import controller from '../controllers/report.controller.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
+import staffAuthOptional from '../middlewares/staffAuthOptional.mdw.js';
 
 // ======== BÁO CÁO BIỂN QUẢNG CÁO (Ads Report)
+
+// [CHỈ DÀNH CHO CÁN BỘ] - lấy danh sách báo cáo theo sở, quận, phường
+router.get('/ads', staffAuthOptional, controller.getAdsReports);
 
 // Lấy danh sách báo cáo biển quảng cáo (BQC)
 router.get('/ads', controller.getAdsReports);

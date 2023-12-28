@@ -18,9 +18,20 @@ const imageHandler = new ImageHandler();
 const controller = {};
 
 controller.getAdsReports = async (req, res) => {
-    const { size = 50, page = 1, districts = [], wards = [] } = req.query;
+    const {
+        size = 50,
+        page = 1,
+        districts = [],
+        wards = [],
+        guestId = '',
+        status = -99,
+    } = req.query;
+    let districtCondition = [],
+        wardCondition = [];
+
     const conditions = {};
     const pagination = { size, page };
+
     // #todo: Giới hạn select fields
     const populate = [
         {
@@ -36,11 +47,47 @@ controller.getAdsReports = async (req, res) => {
         },
         { path: 'ads', select: '-_id' },
     ];
-    if (districts.length > 0) {
-        conditions['district'] = { $in: districts.split(';;') };
-        if (wards.length > 0) conditions['ward'] = { $in: wards.split(';;') };
+
+    // Nếu phân quyền cán bộ
+    const staff = req.staff;
+    if (req.staff) {
+        // #todo: nếu chưa phân phường thì sao??? -> thì không có báo cáo thôi
+        // Nếu cán bộ có role này thì lấy dữ liệu phường đó
+        if (staff.role == 'canbo_phuong' && staff.assigned.ward)
+            wardCondition.push(staff.assigned.ward);
+        // Nếu cán bộ có role này thì lấy dữ liệu quận đó
+        if (staff.role == 'canbo_quan' && staff.assigned.district) {
+            districtCondition.push(staff.assigned.district);
+        } else if (staff.role == 'canbo_so') {
+            // Lấy hết
+        } else {
+            // Nếu cán bộ chưa được phân công sẽ không thấy gì
+            return res
+                .status(200)
+                .json(RESPONSE.SUCCESS([], 'get sucessfully'));
+        }
+
+        if (typeof districts === 'string')
+            districtCondition.push(...districts.split(';;'));
+        if (typeof wards === 'string') wardCondition.push(...wards.split(';;'));
+
+        if (districtCondition.length > 0)
+            conditions['district'] = { $in: districtCondition };
+        if (wardCondition.length > 0)
+            conditions['ward'] = { $in: wardCondition };
+    } else {
+        if (!guestId) {
+            return res
+                .status(200)
+                .json(RESPONSE.SUCCESS([], 'get sucessfully'));
+        }
+        // Nếu người dân (xem danh sách báo cáo của chính mình)
+        conditions['guestId'] = guestId;
     }
-    // console.log('conditions:', conditions);
+
+    if (status !== -99) conditions['status'] = status;
+    console.log('conditions:', conditions);
+
     const data = await adsReportHandler.getList(
         conditions,
         {},
@@ -110,7 +157,7 @@ controller.getAdsLocationReports = async (req, res) => {
         populate,
     );
     const totalItems = await adsLocationReportHandler.count(conditions);
-  
+
     res.status(200).json(
         RESPONSE.SUCCESS(data, 'get sucessfully', {
             pagination: {
@@ -199,7 +246,23 @@ controller.postAdsReport = async (req, res) => {
      * 3. Thêm phường/quận cho report luôn cho tiện truy vấn kkk
      */
     // Todo: validate
-    const { adsId, reportType, fullName, email, phone, content } = req.body;
+    const {
+        adsId,
+        reportType,
+        fullName,
+        email,
+        phone,
+        content,
+        guestId = '',
+    } = req.body;
+    // Kiểm tra spam báo cáo
+    const existingReport = await adsReportHandler.getOne(
+        { ads: adsId, guestId },
+        { _id: 1 },
+    );
+    if (existingReport)
+        return res.status(400).json(RESPONSE.FAILURE(400, 'report exists'));
+
     const ads = await adsHandler.getById(
         adsId,
         {
@@ -270,6 +333,7 @@ controller.postAdsReport = async (req, res) => {
             ads: adsId,
             ward: ads.adsLocation.address.ward._id,
             district: ads.adsLocation.address.district._id,
+            guestId,
         }),
     ]);
 

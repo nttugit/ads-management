@@ -9,7 +9,22 @@ const AdsLocationEditRequestSchema = new Schema(
             ref: 'ads_location',
             required: true,
         },
-        // content: { type: String, required: true },
+        // Thông tin mới (không bắt buộc phải có tất cả)
+        address: {
+            type: Schema.Types.ObjectId,
+            ref: 'address',
+        },
+        locationType: {
+            type: Schema.Types.ObjectId,
+            ref: 'location_type',
+        },
+        adsCategory: {
+            type: Schema.Types.ObjectId,
+            ref: 'ads_category',
+        },
+        isPlanned: { type: Boolean },
+        //
+
         requestTime: { type: Date, default: Date.now() },
         reason: { type: String, required: true },
         sender: { type: Schema.Types.ObjectId, ref: 'staff', required: true },

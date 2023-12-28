@@ -11,12 +11,6 @@ const ReportSchema = new Schema(
         phone: { type: String },
         content: { type: String }, // todo: how to deal with ckeditor?
         images: [{ type: Schema.Types.ObjectId, ref: 'image' }],
-        /**
-         * -1: Đã xoá (có thể không có status này),
-         * 0: Chưa duyệt
-         * 1: Đã duyệt
-         */
-        status: { type: Number, enum: [-1, 0, 1], default: 0 },
     },
     { versionKey: false, timestamps: true },
 );
