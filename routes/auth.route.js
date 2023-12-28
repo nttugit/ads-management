@@ -3,7 +3,7 @@ const router = express.Router();
 import authController from '../controllers/auth.controller.js';
 import { staffSchema } from '../constants/schema.js';
 import validate from '../middlewares/validate.mdw.js';
-import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw..js';
+import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 
 // router.post('/', authController.register);
 

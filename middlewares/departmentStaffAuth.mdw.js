@@ -30,15 +30,3 @@ export default async (req, res, next) => {
 
     next();
 };
-
-// console.log(
-//     generateToken({
-//         username: 'hehe',
-//     }),
-// );
-
-// console.log(
-//     verifyToken(
-//         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlaGUiLCJpYXQiOjE3MDMwMDUzNzUsImV4cCI6MTcwMzg2OTM3NX0.Bf7HX4K0VQPGUesqzvccUi-P55KmdGhklgFp0xNQYSg',
-//     ),
-// );

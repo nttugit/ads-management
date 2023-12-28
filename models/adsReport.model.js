@@ -13,9 +13,13 @@ const AdsReportSchema = new Schema(
             ref: 'district',
             required: true,
         }, // Thiết kế không tốt, làm cho vui
+        // Thiết kế không tốt, làm cho vui
+        guestId: { type: String, required: true },
     },
     { versionKey: false },
 );
+
+AdsReportSchema.index({ guestId: 'text' });
 
 const Model = mongoose.model('ads_report', AdsReportSchema);
 
