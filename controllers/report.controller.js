@@ -2,7 +2,7 @@ import RESPONSE from '../constants/response.js';
 import ImageHandler from '../handlers/image.handler.js';
 import { removeImages } from '../utils/image.js';
 import { sendEmail, createReportEmailContent } from '../utils/email.js';
-import { EMAIL_TITLES } from '../constants/email.js';
+import { EMAIL_TITLES, REPORT_STATUS } from '../constants/email.js';
 import ReportHandler from '../handlers/report.handler.js';
 import AdsHandler from '../handlers/ads.handler.js';
 import AdsLocationHandler from '../handlers/adsLocation.handler.js';
@@ -445,6 +445,7 @@ controller.postAdsLocationReport = async (req, res) => {
 controller.patchAdsReport = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
+
     const populate = [
         {
             path: 'report',
@@ -460,6 +461,11 @@ controller.patchAdsReport = async (req, res) => {
             path: 'ads',
         },
     ];
+    const adsReport = await adsReportHandler.getById(id, {}, populate);
+    if (!adsReport)
+        return res
+            .status(400)
+            .json(RESPONSE.FAILURE(400, 'ads report not found'));
     const result = await adsReportHandler.updateAndReturn(
         { _id: id },
         {
@@ -468,6 +474,10 @@ controller.patchAdsReport = async (req, res) => {
         {},
         populate,
     );
+    if (result) {
+        const content = REPORT_STATUS[status];
+        await sendEmail(adsReport.report.email, EMAIL_TITLES.ADS, content);
+    }
     res.status(200).json(RESPONSE.SUCCESS(result, 'update successfully'));
 };
 
