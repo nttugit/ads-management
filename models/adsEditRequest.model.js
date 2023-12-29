@@ -26,10 +26,20 @@ const AdsEditRequestSchema = new Schema(
         requestTime: { type: Date, default: Date.now() },
         reason: { type: String, required: true },
         sender: { type: Schema.Types.ObjectId, ref: 'staff', required: true },
+
+        // code bậy, để filter
+        ward: { type: Schema.Types.ObjectId, ref: 'ward', default: null },
+        district: {
+            type: Schema.Types.ObjectId,
+            ref: 'district',
+            default: null,
+        },
+
         /**
-         * 0: Đang chờ xử lý,
-         * 1: Đã xử lý,
          * -1: Đã xoá (Nếu soft delete)
+         * 0: Đang chờ,
+         * 1: Đang xử lý,
+         * 2: Đã xử lý
          */
         status: { type: Number, enum: [-1, 0, 1], default: 0 },
     },
