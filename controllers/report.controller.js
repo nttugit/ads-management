@@ -1,18 +1,20 @@
 import RESPONSE from '../constants/response.js';
 import ImageHandler from '../handlers/image.handler.js';
 import { removeImages } from '../utils/image.js';
-
+import { sendEmail, createReportEmailContent } from '../utils/email.js';
+import { EMAIL_TITLES } from '../constants/email.js';
 import ReportHandler from '../handlers/report.handler.js';
 import AdsHandler from '../handlers/ads.handler.js';
 import AdsLocationHandler from '../handlers/adsLocation.handler.js';
 import AdsReportHandler from '../handlers/adsReport.handler.js';
 import AdsLocationReportHandler from '../handlers/adsLocationReport.handler.js';
-
+import ReportSolutionHandler from '../handlers/reportSolution.handler.js';
 const reportHandler = new ReportHandler();
 const adsHandler = new AdsHandler();
 const adsLocationHandler = new AdsLocationHandler();
 const adsReportHandler = new AdsReportHandler();
 const adsLocationReportHandler = new AdsLocationReportHandler();
+const reportSolutionHandler = new ReportSolutionHandler();
 
 const imageHandler = new ImageHandler();
 const controller = {};
@@ -276,10 +278,7 @@ controller.postAdsReport = async (req, res) => {
                     {
                         path: 'address',
                         select: 'district ward',
-                        populate: [
-                            { path: 'district', select: '_id' },
-                            { path: 'ward', select: '_id' },
-                        ],
+                        populate: [{ path: 'district' }, { path: 'ward' }],
                     },
                 ],
             },
@@ -321,6 +320,9 @@ controller.postAdsReport = async (req, res) => {
         res.status(400).json(RESPONSE.FAILURE(400, 'something wrong'));
     // console.log('newReport', newReport);
     // Cập nhật ảnh thuộc report này và tạo mới Ads Report
+    const ward = ads.adsLocation.address.ward;
+    const district = ads.adsLocation.address.district;
+
     const [updateImage, newAdsReport] = await Promise.all([
         imageHandler.updateMany(
             { _id: { $in: imageIds } },
@@ -331,11 +333,22 @@ controller.postAdsReport = async (req, res) => {
         adsReportHandler.create({
             report: newReport._id,
             ads: adsId,
-            ward: ads.adsLocation.address.ward._id,
-            district: ads.adsLocation.address.district._id,
+            ward: ward._id,
+            district: district._id,
             guestId,
         }),
     ]);
+
+    if (newAdsReport) {
+        const reportSolution = await reportSolutionHandler.getOne({ ward });
+        const content = createReportEmailContent(
+            fullName,
+            ward.name,
+            district.name,
+            reportSolution.solution,
+        );
+        await sendEmail(email, EMAIL_TITLES.ADS, content);
+    }
 
     res.status(201).json(
         RESPONSE.SUCCESS(

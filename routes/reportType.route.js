@@ -5,9 +5,9 @@ import validate from '../middlewares/validate.mdw.js';
 import { reportTypeSchema } from '../constants/schema.js';
 import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 // Lấy danh sách
-router.get('/', departmentStaffAuth, controller.getReportTypes);
+router.get('/', controller.getReportTypes);
 // Lấy thông tin chi tiết
-router.get('/:id', departmentStaffAuth, controller.getReportType);
+router.get('/:id', controller.getReportType);
 // Tạo
 router.post(
     '/',
