@@ -296,18 +296,21 @@ controller.postAdsLocationEditRequest = async (req, res) => {
     res.status(200).json(RESPONSE.SUCCESS(result, 'created'));
 };
 
-// controller.patchAdsCategory = async (req, res) => {
-//     // Todo: validate
-//     const { id } = req.params;
-//     const data = req.body;
-//     const updatedAdsCategory = await handler.updateById(id, data);
-//     res.status(200).json(RESPONSE.SUCCESS(updatedAdsCategory, 'updated'));
-// };
+controller.patchAdsLocationEditRequest = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const populate = [
+        { path: 'adsLocation' },
+        { path: 'sender', select: 'fullName phone email' },
+    ];
 
-// controller.deleteAdsCategory = async (req, res) => {
-//     const { id } = req.params;
-//     const deletedAdsCategory = await handler.deleteById(id);
-//     res.status(200).json(RESPONSE.SUCCESS(deletedAdsCategory, 'deleted'));
-// };
+    const result = await adsLocationEditRequestHandler.updateAndReturn(
+        { _id: id },
+        { status },
+        {},
+        populate,
+    );
+    res.status(200).json(RESPONSE.SUCCESS(result, 'update sucessfully'));
+};
 
 export default controller;

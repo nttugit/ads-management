@@ -20,7 +20,7 @@ router.get('/ads/:id', controller.getAdsEditRequest);
 // [CÁN BỘ PHƯỜNG] Tạo Edit request cho BQC
 router.post(
     '/ads',
-    wardStaffAuthMdw,
+    staffAuth,
     upload.array('images'),
     resizeAndSaveImages,
     controller.postAdsEditRequest,
@@ -31,13 +31,23 @@ router.patch('/ads/:id', departmentStaffAuth, controller.patchAdsEditRequest);
 
 // ============== ĐIỂM ĐẶT ===============
 // Tương tự BQC
-router.get('/ads-location', controller.getAdsLocationEditRequests);
-router.get('/ads-location/mine', controller.getMyAdsLocationEditRequests);
-router.get('/ads-location/:id', controller.getAdsLocationEditRequest);
-router.post(
+router.get(
     '/ads-location',
-    wardStaffAuthMdw,
-    controller.postAdsLocationEditRequest,
+    departmentStaffAuth,
+    controller.getAdsLocationEditRequests,
+);
+router.get(
+    '/ads-location/mine',
+    staffAuth,
+    controller.getMyAdsLocationEditRequests,
+);
+router.get('/ads-location/:id', controller.getAdsLocationEditRequest);
+router.post('/ads-location', staffAuth, controller.postAdsLocationEditRequest);
+
+router.patch(
+    '/ads-location/:id',
+    departmentStaffAuth,
+    controller.patchAdsLocationEditRequest,
 );
 
 export default router;
