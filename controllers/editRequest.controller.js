@@ -1,12 +1,14 @@
 import RESPONSE from '../constants/response.js';
 import AdsEditRequestHandler from '../handlers/adsEditRequest.handler.js';
 import AdsHandler from '../handlers/ads.handler.js';
+// import AdsLocationHandler from '../handlers/adsLocation.handler.js';
 import AdsLocationEditRequestHandler from '../handlers/adsLocationEditRequest.handler.js';
 import AddressHandler from '../handlers/address.handler.js';
 const adsEditRequestHandler = new AdsEditRequestHandler();
 const adsLocationEditRequestHandler = new AdsLocationEditRequestHandler();
 const addressHandler = new AddressHandler();
 const adsHandler = new AdsHandler();
+// const adsLocationHandler = new AdsLocationHandler();
 const controller = {};
 
 // ============ ADS EDIT REQUEST
@@ -33,7 +35,7 @@ controller.getAdsEditRequests = async (req, res) => {
     );
 
     const totalItems = await adsEditRequestHandler.count(conditions);
-    // const {size}
+
     res.status(200).json(
         RESPONSE.SUCCESS(data, 'get sucessfully', {
             pagination: {
@@ -59,7 +61,7 @@ controller.getMyAdsEditRequests = async (req, res) => {
         conditions['district'] = { $in: [district] };
         if (ward) conditions['ward'] = { $in: [ward] };
     }
-    console.log('conditions:', conditions);
+    // console.log('conditions:', conditions);
     const data = await adsEditRequestHandler.getList(
         conditions,
         {},
@@ -113,17 +115,13 @@ controller.postAdsEditRequest = async (req, res) => {
             ],
         },
     ]);
+
     if (!ads)
         return res.status(400).json(RESPONSE.FAILURE(400, 'ads not found'));
 
     const adsWard = ads.adsLocation.address.ward._id;
     const adsDistrict = ads.adsLocation.address.district._id;
-    console.log({
-        ward,
-        adsWard,
-        adsDistrict,
-        district,
-    });
+
     if (ward.toString() != adsWard.toString()) {
         if (district.toString() != adsDistrict.toString())
             return res
@@ -166,13 +164,56 @@ controller.patchAdsEditRequest = async (req, res) => {
 
 // ============ ADS LOCATION EDIT REQUEST
 controller.getAdsLocationEditRequests = async (req, res) => {
-    const { size = 50, page = 1 } = req.query;
+    const { size = 50, page = 1, wards = [], districts = [] } = req.query;
+
     const conditions = {};
     const pagination = { size, page };
     const populate = [
         { path: 'adsLocation' },
         { path: 'sender', select: 'fullName phone email' },
     ];
+
+    if (typeof districts === 'string') {
+        conditions['district'] = { $in: districts.split(';;') };
+        if (typeof wards === 'string')
+            conditions['ward'] = { $in: wards.split(';;') };
+    }
+
+    const data = await adsLocationEditRequestHandler.getList(
+        conditions,
+        {},
+        pagination,
+        populate,
+    );
+    const totalItems = await adsLocationEditRequestHandler.count(conditions);
+    // const {size}
+    res.status(200).json(
+        RESPONSE.SUCCESS(data, 'get sucessfully', {
+            pagination: {
+                totalItems, // Total number of items available
+                itemsPerPage: size, // Number of items per page
+                currentPage: page, // The current page being returned
+                totalPages: Math.ceil(totalItems / size),
+            },
+        }),
+    );
+};
+
+controller.getMyAdsLocationEditRequests = async (req, res) => {
+    const { size = 50, page = 1, wards = [], districts = [] } = req.query;
+
+    const conditions = {};
+    const pagination = { size, page };
+    const populate = [
+        { path: 'adsLocation' },
+        { path: 'sender', select: 'fullName phone email' },
+    ];
+
+    if (typeof districts === 'string') {
+        conditions['district'] = { $in: districts.split(';;') };
+        if (typeof wards === 'string')
+            conditions['ward'] = { $in: wards.split(';;') };
+    }
 
     const data = await adsLocationEditRequestHandler.getList(
         conditions,
@@ -213,6 +254,8 @@ controller.getAdsLocationEditRequest = async (req, res) => {
 controller.postAdsLocationEditRequest = async (req, res) => {
     // Todo: validate
     const data = req.body;
+    const { district: staffDistrict = null, ward: staffWard } =
+        req.staff.assigned;
     const {
         lat,
         long,
@@ -246,6 +289,9 @@ controller.postAdsLocationEditRequest = async (req, res) => {
 
     if (address) data['address'] = address._id;
     data.sender = req.staff._id;
+    data.district = staffDistrict;
+    data.ward = staffWard;
+
     const result = await adsLocationEditRequestHandler.create(data);
     res.status(200).json(RESPONSE.SUCCESS(result, 'created'));
 };

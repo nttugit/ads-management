@@ -30,19 +30,14 @@ router.post(
 router.patch('/ads/:id', departmentStaffAuth, controller.patchAdsEditRequest);
 
 // ============== ĐIỂM ĐẶT ===============
+// Tương tự BQC
 router.get('/ads-location', controller.getAdsLocationEditRequests);
+router.get('/ads-location/mine', controller.getMyAdsLocationEditRequests);
 router.get('/ads-location/:id', controller.getAdsLocationEditRequest);
-
-// Tạo Edit request cho ĐĐ
 router.post(
     '/ads-location',
     wardStaffAuthMdw,
     controller.postAdsLocationEditRequest,
 );
-
-// Cập nhật
-// router.patch('/:id', controller.patchAdsCategory);
-// Xoá
-// router.delete('/:id', controller.deleteAdsCategory);
 
 export default router;
