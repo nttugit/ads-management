@@ -51,25 +51,22 @@ controller.updateInfo = async (req, res) => {
     res.status(200).json(RESPONSE.SUCCESS(resp, 'update sucessfully'));
 };
 
-// controller.postAdsCategory = async (req, res) => {
-//     // Todo: validate
-//     const data = req.body;
-//     const newAdsCategory = await handler.create(data);
-//     res.status(200).json(RESPONSE.SUCCESS(newAdsCategory, 'created'));
-// };
+controller.assign = async (req, res) => {
+    const { id } = req.params;
+    const staff = await handler.getById(id, { _id: 1 });
+    if (!staff)
+        return res.status(400).json(RESPONSE.FAILURE(400, 'staff not found'));
 
-// controller.patchAdsCategory = async (req, res) => {
-//     // Todo: validate
-//     const { id } = req.params;
-//     const data = req.body;
-//     const updatedAdsCategory = await handler.updateById(id, data);
-//     res.status(200).json(RESPONSE.SUCCESS(updatedAdsCategory, 'updated'));
-// };
-
-// controller.deleteAdsCategory = async (req, res) => {
-//     const { id } = req.params;
-//     const deletedAdsCategory = await handler.deleteById(id);
-//     res.status(200).json(RESPONSE.SUCCESS(deletedAdsCategory, 'deleted'));
-// };
+    const data = req.body;
+    const projection = '-password -refreshToken -createdAt -updatedAt';
+    const resp = await handler.updateAndReturn(
+        {
+            _id: id,
+        },
+        data,
+        projection,
+    );
+    res.status(200).json(RESPONSE.SUCCESS(resp, 'update sucessfully'));
+};
 
 export default controller;

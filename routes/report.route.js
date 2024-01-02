@@ -4,6 +4,7 @@ import controller from '../controllers/report.controller.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
 import staffAuthOptional from '../middlewares/staffAuthOptional.mdw.js';
 import wardStaffAuth from '../middlewares/wardStaffAuth.mdw.js';
+import staffAuth from '../middlewares/staffAuth.mdw.js';
 
 // ======== BÁO CÁO BIỂN QUẢNG CÁO (Ads Report)
 
@@ -21,8 +22,8 @@ router.post(
     resizeAndSaveImages,
     controller.postAdsReport,
 );
-// Cán bộ PHƯỜNG cập nhật tình trạng báo cáo
-router.patch('/ads/:id', wardStaffAuth, controller.patchAdsReport);
+// Cán bộ PHƯỜNG/QUẬN cập nhật tình trạng báo cáo
+router.patch('/ads/:id', staffAuth, controller.patchAdsReport);
 
 // ======== BÁO CÁO ĐỊA ĐIỂM ĐẶT (Ads Locatio Report)
 

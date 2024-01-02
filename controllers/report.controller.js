@@ -443,6 +443,8 @@ controller.postAdsLocationReport = async (req, res) => {
 };
 
 controller.patchAdsReport = async (req, res) => {
+    // Kiêm tra quảng cáo phải thuộc PHƯỜNG/QUẬN của mình
+    const { assigned } = req.staff;
     const { id } = req.params;
     const { status } = req.body;
 
@@ -466,6 +468,20 @@ controller.patchAdsReport = async (req, res) => {
         return res
             .status(400)
             .json(RESPONSE.FAILURE(400, 'ads report not found'));
+
+    // sai quận -> sai,
+    // đúng quận -> chưa biết
+    // đúng quận, sai phường -> sai
+    // đúng quận, đúng phường -> đúng
+    if (assigned.district.toString() !== adsReport.district.toString())
+        return res.status(403).json(RESPONSE.FAILURE(403, 'unauthorized'));
+
+    if (
+        assigned.ward != null &&
+        assigned.ward.toString() !== adsReport.ward.toString()
+    )
+        return res.status(403).json(RESPONSE.FAILURE(403, 'unauthorized'));
+
     const result = await adsReportHandler.updateAndReturn(
         { _id: id },
         {
@@ -476,7 +492,7 @@ controller.patchAdsReport = async (req, res) => {
     );
     if (result) {
         const content = REPORT_STATUS[status];
-        await sendEmail(adsReport.report.email, EMAIL_TITLES.ADS, content);
+        // await sendEmail(adsReport.report.email, EMAIL_TITLES.ADS, content);
     }
     res.status(200).json(RESPONSE.SUCCESS(result, 'update successfully'));
 };

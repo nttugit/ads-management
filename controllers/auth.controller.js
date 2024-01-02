@@ -72,29 +72,6 @@ controller.createNewAccount = async (req, res) => {
     res.status(201).json(RESPONSE.SUCCESS(newStaff, 'created'));
 };
 
-controller.assignRole = async (req, res) => {
-    // Todo: validate
-    /**
-     * username: lowercase
-     */
-    /**
-     * 1. Kiểm tra tồn tại username
-     * 2. Hash password
-     * 3. Lưu và trả về dữ liệu (projection)
-     *
-     * Note: có cần kiểm tra trùng email và phone không?
-     */
-    const data = req.body;
-    const exist = await handler.getOne({ username: data.username }, { _id: 1 });
-    if (exist)
-        return res.status(400).json(RESPONSE.FAILURE(400, 'username exists'));
-
-    const hashedPassword = hashPassword(data.password);
-    data.password = hashedPassword;
-    const newStaff = await handler.create(data);
-    res.status(201).json(RESPONSE.SUCCESS(newStaff, 'created'));
-};
-
 controller.login = async (req, res) => {
     // Todo: validate
     const { username, password } = req.body;

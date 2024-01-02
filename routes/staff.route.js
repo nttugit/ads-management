@@ -21,4 +21,6 @@ router.patch(
     controller.updateInfo,
 );
 
+// CANBO_SO: Phân công khu vực quản lý
+router.patch('/assign/:id', departmentStaffAuth, controller.assign);
 export default router;
