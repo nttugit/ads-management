@@ -6,11 +6,7 @@ import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 // Lấy danh sách
 router.get('/', departmentStaffAuth, billboardTypeController.getBillboardTypes);
 // Lấy thông tin chi tiết
-router.get(
-    '/:id',
-    departmentStaffAuth,
-    billboardTypeController.getBillboardType,
-);
+router.get('/:id', billboardTypeController.getBillboardType);
 // Tạo
 router.post(
     '/',

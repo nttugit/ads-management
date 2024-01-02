@@ -7,7 +7,7 @@ import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 // Lấy danh sách
 router.get('/', departmentStaffAuth, controller.getWards);
 // Lấy thông tin chi tiết
-router.get('/:id', departmentStaffAuth, controller.getWard);
+router.get('/:id', controller.getWard);
 // Tạo
 router.post(
     '/',
