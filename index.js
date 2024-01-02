@@ -34,6 +34,7 @@ import editRequestRouter from './routes/editRequest.route.js';
 
 import districtRouter from './routes/district.route.js';
 import wardRouter from './routes/ward.route.js';
+import mapRouter from './routes/map.route.js';
 
 // Đảm bảo response trả về theo đúng format
 import RESPONSE from './constants/response.js';
@@ -68,6 +69,8 @@ app.use('/edit-requests', editRequestRouter);
 app.use('/districts', districtRouter);
 app.use('/wards', wardRouter);
 
+// Bản đồ
+app.use('/map', mapRouter);
 // Thống kê
 // app.use('/stats', statsRouter);
 
