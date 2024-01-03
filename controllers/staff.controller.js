@@ -35,6 +35,7 @@ controller.getAStaff = async (req, res) => {
 
 controller.updateInfo = async (req, res) => {
     const data = req.body;
+    
     // Nếu cập nhật mật khẩu thì cần phải hash
     if (data?.password) {
         const hashedPassword = hashPassword(data.password);

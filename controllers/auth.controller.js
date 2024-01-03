@@ -58,13 +58,17 @@ controller.createNewAccount = async (req, res) => {
     console.log('data', data);
 
     const newStaff = (await handler.create(data)).toObject();
-    if (newStaff?.role === 'canbo_phuong') {
+    if (newStaff?.role === 'canbo_phuong' && data.assigned?.ward) {
         await wardHandler.updateById(data.assigned?.ward, {
-            staff: newStaff._id,
+            $push: {
+                staffs: newStaff._id,
+            },
         });
-    } else if (newStaff?.role === 'canbo_quan') {
+    } else if (newStaff?.role === 'canbo_quan' && data.assigned?.district) {
         await districtHandler.updateById(newStaff.assigned.district, {
-            staff: newStaff._id,
+            $push: {
+                staffs: newStaff._id,
+            },
         });
     }
     delete newStaff['password'];
