@@ -7,9 +7,9 @@ import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
 
 // ============== BIỂN QUẢNG CÁO ===============
-
+    
 // [CÁN BỘ SỞ] Lấy danh sách yêu cầu chỉnh sửa BQC
-router.get('/ads', departmentStaffAuth, controller.getAdsEditRequests);
+router.get('/ads', controller.getAdsEditRequests);
 
 // [CÁN BỘ QUẬN/PHƯỜNG] Lấy danh sách yêu cầu của chính mình đã gửi
 router.get('/ads/mine', staffAuth, controller.getMyAdsEditRequests);

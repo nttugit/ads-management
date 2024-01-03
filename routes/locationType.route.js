@@ -3,7 +3,7 @@ const router = express.Router();
 import controller from '../controllers/locationType.controller.js';
 import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 // Lấy danh sách
-router.get('/', departmentStaffAuth, controller.getLocationTypes);
+router.get('/', controller.getLocationTypes);
 // Lấy thông tin chi tiết
 router.get('/:id', controller.getLocationType);
 // Tạo

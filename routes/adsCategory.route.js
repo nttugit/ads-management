@@ -4,7 +4,7 @@ import controller from '../controllers/adsCategory.controller.js';
 import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 
 // Lấy danh sách
-router.get('/', departmentStaffAuth, controller.getAdsCategories);
+router.get('/', controller.getAdsCategories);
 // Lấy thông tin chi tiết
 router.get('/:id', controller.getAdsCategory);
 // Tạo
