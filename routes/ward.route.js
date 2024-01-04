@@ -5,7 +5,7 @@ import { wardSchema } from '../constants/schema.js';
 import validate from '../middlewares/validate.mdw.js';
 import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 // Lấy danh sách
-router.get('/', departmentStaffAuth, controller.getWards);
+router.get('/', controller.getWards);
 // Lấy thông tin chi tiết
 router.get('/:id', controller.getWard);
 // Tạo
