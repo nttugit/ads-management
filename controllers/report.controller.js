@@ -128,7 +128,7 @@ controller.getAdsLocationReports = async (req, res) => {
         },
         {
             path: 'adsLocation',
-            select: '-_id -createdAt -updatedAt',
+            select: '-createdAt -updatedAt',
             populate: [
                 {
                     path: 'address',
