@@ -56,11 +56,12 @@ controller.getMyAdsEditRequests = async (req, res) => {
         { path: 'ads' },
         { path: 'sender', select: 'fullName phone email' },
     ];
-    const { district = null, ward = null } = req.staff.assigned;
-    if (district) {
-        conditions['district'] = { $in: [district] };
-        if (ward) conditions['ward'] = { $in: [ward] };
-    }
+    conditions['sender'] = req.staff._id;
+    // const { district = null, ward = null } = req.staff.assigned;
+    // if (district) {
+    //     conditions['district'] = { $in: [district] };
+    //     if (ward) conditions['ward'] = { $in: [ward] };
+    // }
     // console.log('conditions:', conditions);
     const data = await adsEditRequestHandler.getList(
         conditions,
@@ -200,7 +201,7 @@ controller.getAdsLocationEditRequests = async (req, res) => {
 };
 
 controller.getMyAdsLocationEditRequests = async (req, res) => {
-    const { size = 50, page = 1, wards = [], districts = [] } = req.query;
+    const { size = 50, page = 1 } = req.query;
 
     const conditions = {};
     const pagination = { size, page };
@@ -208,12 +209,7 @@ controller.getMyAdsLocationEditRequests = async (req, res) => {
         { path: 'adsLocation' },
         { path: 'sender', select: 'fullName phone email' },
     ];
-
-    if (typeof districts === 'string') {
-        conditions['district'] = { $in: districts.split(';;') };
-        if (typeof wards === 'string')
-            conditions['ward'] = { $in: wards.split(';;') };
-    }
+    conditions['sender'] = req.staff._id;
 
     const data = await adsLocationEditRequestHandler.getList(
         conditions,
