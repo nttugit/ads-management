@@ -47,7 +47,7 @@ controller.getAdsReports = async (req, res) => {
                 },
             ],
         },
-        { path: 'ads', select: '-_id' },
+        { path: 'ads' },
     ];
 
     // Nếu phân quyền cán bộ
