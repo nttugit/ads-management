@@ -31,6 +31,7 @@ import billboardTypeRouter from './routes/billboardType.route.js';
 import reportTypeRouter from './routes/reportType.route.js';
 import reportRouter from './routes/report.route.js';
 import editRequestRouter from './routes/editRequest.route.js';
+import adsRequestRouter from './routes/adsRequest.route.js';
 
 import districtRouter from './routes/district.route.js';
 import wardRouter from './routes/ward.route.js';
@@ -64,6 +65,9 @@ app.use('/reports', reportRouter);
 
 // Yêu cầu chỉnh sửa biển quảng cáo và điểm đặt
 app.use('/edit-requests', editRequestRouter);
+
+// Yêu cầu cấp phép quảng cáo (cho các công ty)
+app.use('/ads-requests', adsRequestRouter);
 
 // Phường, quận
 app.use('/districts', districtRouter);
