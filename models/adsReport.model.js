@@ -8,11 +8,11 @@ const AdsReportSchema = new Schema(
         report: { type: Schema.Types.ObjectId, ref: 'report', required: true },
 
         // Thiết kế dưới đây không tốt, làm cho tiện thôi
-        ward: { type: Schema.Types.ObjectId, ref: 'ward', required: true },
+        ward: { type: Schema.Types.ObjectId, ref: 'ward', default: null },
         district: {
             type: Schema.Types.ObjectId,
             ref: 'district',
-            required: true,
+            default: null,
         },
 
         guestId: { type: String, required: true },

@@ -8,7 +8,7 @@ import staffAuth from '../middlewares/staffAuth.mdw.js';
 
 // ======== BÁO CÁO BIỂN QUẢNG CÁO (Ads Report)
 
-// [CHỈ DÀNH CHO CÁN BỘ] - lấy danh sách báo cáo theo sở, quận, phường
+// lấy danh sách báo cáo theo: CỦA NGƯỜI DÂN, sở, quận, phường
 router.get('/ads', staffAuthOptional, controller.getAdsReports);
 
 // Lấy danh sách báo cáo biển quảng cáo (BQC)
@@ -28,17 +28,21 @@ router.patch('/ads/:id', staffAuth, controller.patchAdsReport);
 // ======== BÁO CÁO ĐỊA ĐIỂM ĐẶT (Ads Locatio Report)
 
 // Lấy danh sách báo cáo điểm đặt
-router.get('/ads-location', controller.getAdsLocationReports);
+// router.get(
+//     '/ads-location',
+//     staffAuthOptional,
+//     controller.getAdsLocationReports,
+// );
 
-// Lấy thông tin chi tiết
-router.get('/ads-location/:id', controller.getAdsLocationReport);
+// // Lấy thông tin chi tiết
+// router.get('/ads-location/:id', controller.getAdsLocationReport);
 
-// Tạo báo cáo cho Điểm đặt
-router.post(
-    '/ads-location',
-    upload.array('images'),
-    resizeAndSaveImages,
-    controller.postAdsLocationReport,
-);
+// // Tạo báo cáo cho Điểm đặt
+// router.post(
+//     '/ads-location',
+//     upload.array('images'),
+//     resizeAndSaveImages,
+//     controller.postAdsLocationReport,
+// );
 
 export default router;

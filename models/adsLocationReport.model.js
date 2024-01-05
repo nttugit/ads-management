@@ -11,12 +11,23 @@ const AdsLocationReportSchema = new Schema(
         },
         report: { type: Schema.Types.ObjectId, ref: 'report', required: true },
 
-        ward: { type: Schema.Types.ObjectId, ref: 'ward', required: true }, // Thiết kế không tốt, làm cho vui
+        // Thiết kế dưới đây không tốt, làm cho tiện thôi
+        ward: { type: Schema.Types.ObjectId, ref: 'ward', default: null },
         district: {
             type: Schema.Types.ObjectId,
             ref: 'district',
-            required: true,
-        }, // Thiết kế không tốt, làm cho vui
+            default: null,
+        },
+
+        guestId: { type: String, required: true },
+        /**
+         * Mặc định người dân gửi báo cáo lên là Đang chờ
+         * -1: Đã xoá
+         * 0: Đang chờ (chưa xử lý)
+         * 1: Đang xử lý
+         * 2 : Đã xử lý xong
+         */
+        status: { type: Number, enum: [-1, 0, 1, 2], default: 0 },
     },
     { versionKey: false },
 );

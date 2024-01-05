@@ -16,3 +16,4 @@ https://hackmd.io/@nndkhoa9/rkYF2FLGT
 
 -   Có soft delete và cả hard delete
 -   Lỗi tìm không thấy dữ liệu là 204, nếu tìm không thấy user thì đó là 400
+-   Chạy script tạo report solution khi tạo phường mới (xoá trước khi chạy)
