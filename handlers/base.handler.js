@@ -30,6 +30,11 @@ class BaseHandler {
 
     async getOne(conditions = {}, projection = {}) {
         try {
+            // console.log('conditions: ' + conditions);
+            // const result = await this.Model.find(conditions);
+            // const result = await this.Model.find({
+            //     name: { $regex: new RegExp(`5`, 'i') },
+            // });
             const result = await this.Model.findOne(conditions, projection);
             return result;
         } catch (error) {
@@ -71,6 +76,8 @@ class BaseHandler {
             console.log('!!! MONGODB ERROR:' + error);
         }
     }
+
+    // async search()
 
     async create(data = {}) {
         try {

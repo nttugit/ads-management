@@ -25,6 +25,16 @@ router.post(
 // Cán bộ PHƯỜNG/QUẬN cập nhật tình trạng báo cáo
 router.patch('/ads/:id', staffAuth, controller.patchAdsReport);
 
+// ======== BÁO CÁO MỘT ĐỊA ĐIỂM BẤT KỲ
+router.get('/location', staffAuthOptional, controller.getLocationReports);
+router.get('/location/:id', controller.getLocationReport);
+
+router.post(
+    '/location',
+    upload.array('images'),
+    resizeAndSaveImages,
+    controller.postLocationReport,
+);
 // ======== BÁO CÁO ĐỊA ĐIỂM ĐẶT (Ads Locatio Report)
 
 // Lấy danh sách báo cáo điểm đặt

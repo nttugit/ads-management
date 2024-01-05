@@ -57,6 +57,31 @@ const reverseGeocodeWithTrueWayAPI = async (lat, long) => {
     }
 };
 
+const reverseGeocodeWithTrueWayAPI2 = async (lat, long) => {
+    const options = {
+        method: 'GET',
+        url: 'https://trueway-geocoding.p.rapidapi.com/ReverseGeocode',
+        params: {
+            // location: '10.767565477790804, 106.69480837318082',
+            location: lat + ',' + long,
+            language: 'en',
+        },
+        headers: {
+            'X-RapidAPI-Key': process.env.RAPID_API_KEY,
+            'X-RapidAPI-Host': 'trueway-geocoding.p.rapidapi.com',
+        },
+    };
+
+    try {
+        const response = await axios.request(options);
+        const listOfAddresses = response?.data?.results;
+        return listOfAddresses.length > 0 ? listOfAddresses[0] : null;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 // https://rapidapi.com/GeocodeSupport/api/forward-reverse-geocoding
 const reverseGeocodingWithForwardReverse = async (lat, long) => {
     const options = {
@@ -77,6 +102,30 @@ const reverseGeocodingWithForwardReverse = async (lat, long) => {
     try {
         const response = await axios.request(options);
         return response?.data ? response.data?.display_name : null;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const reverseGeocodingWithForwardReverse2 = async (lat, long) => {
+    const options = {
+        method: 'GET',
+        url: 'https://forward-reverse-geocoding.p.rapidapi.com/v1/reverse',
+        params: {
+            lat,
+            lon: long,
+            'accept-language': 'vn',
+            polygon_threshold: '0.0',
+        },
+        headers: {
+            'X-RapidAPI-Key': process.env.RAPID_API_KEY,
+            'X-RapidAPI-Host': 'forward-reverse-geocoding.p.rapidapi.com',
+        },
+    };
+
+    try {
+        const response = await axios.request(options);
+        return response?.data;
     } catch (error) {
         console.error(error);
     }
@@ -135,8 +184,11 @@ const reverseGeocode = async (lat, long) => {
 //     const address =
 //         '227 Đ. Nguyễn Văn Cừ, Phường 4, Quận 5, Thành phố Hồ Chí Minh, Vietnam';
 //     const coors = [10.76261643975305, 106.68233692948039];
-//     const result = await reverseGeocode(...coors);
+//     const result = await reverseGeocodingWithForwardReverse2(...coors);
 //     console.log(result);
 // })();
 
-export { geocode, reverseGeocode };
+// quarter: Phường 4
+// suburb: 'Quận 5',
+
+export { geocode, reverseGeocode, reverseGeocodingWithForwardReverse2 };
