@@ -46,7 +46,7 @@ controller.getAdsReports = async (req, res) => {
                 },
             ],
         },
-        { path: 'ads', select: '-_id' },
+        { path: 'ads' },
     ];
 
     // Nếu phân quyền cán bộ
@@ -97,6 +97,68 @@ controller.getAdsReports = async (req, res) => {
     );
     const totalItems = await adsReportHandler.count(conditions);
     // const {size}
+    res.status(200).json(
+        RESPONSE.SUCCESS(data, 'get sucessfully', {
+            pagination: {
+                totalItems, // Total number of items available
+                itemsPerPage: size, // Number of items per page
+                currentPage: page, // The current page being returned
+                totalPages: Math.ceil(totalItems / size),
+            },
+        }),
+    );
+};
+
+controller.getAdsLocationReports = async (req, res) => {
+    const { size = 50, page = 1, districts = [], wards = [] } = req.query;
+    const conditions = {};
+    const pagination = { size, page };
+    const populate = [
+        {
+            path: 'report',
+            select: '-_id',
+            populate: [
+                { path: 'reportType', select: '-_id' },
+                {
+                    path: 'images',
+                    select: '-_id -report',
+                },
+            ],
+        },
+        {
+            path: 'adsLocation',
+            select: '-createdAt -updatedAt',
+            populate: [
+                {
+                    path: 'address',
+                    populate: [
+                        { path: 'ward', select: 'name -_id' },
+                        { path: 'district', select: 'name -_id' },
+                    ],
+                },
+                {
+                    path: 'locationType',
+                    select: '-_id',
+                },
+                {
+                    path: 'adsCategory',
+                    select: '-_id',
+                },
+            ],
+        },
+    ];
+    if (districts.length > 0) {
+        conditions['district'] = { $in: districts.split(';;') };
+        if (wards.length > 0) conditions['ward'] = { $in: wards.split(';;') };
+    }
+    const data = await adsLocationReportHandler.getList(
+        conditions,
+        {},
+        pagination,
+        populate,
+    );
+    const totalItems = await adsLocationReportHandler.count(conditions);
+
     res.status(200).json(
         RESPONSE.SUCCESS(data, 'get sucessfully', {
             pagination: {
