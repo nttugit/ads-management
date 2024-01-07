@@ -3,7 +3,8 @@ const router = express.Router();
 import controller from '../controllers/ads.controller.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
 import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
-
+import { adsSchema } from '../constants/schema.js';
+import validate from '../middlewares/validate.mdw.js';
 // Lấy danh sách
 router.get('/', controller.getAdsList);
 
@@ -15,6 +16,7 @@ router.get('/:id', controller.getAds);
 router.post(
     '/',
     departmentStaffAuth,
+    validate(adsSchema),
     upload.array('images'),
     resizeAndSaveImages,
     controller.postAds,

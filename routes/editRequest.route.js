@@ -5,9 +5,10 @@ import staffAuth from '../middlewares/staffAuth.mdw.js';
 import wardStaffAuthMdw from '../middlewares/wardStaffAuth.mdw.js';
 import departmentStaffAuth from '../middlewares/departmentStaffAuth.mdw.js';
 import { upload, resizeAndSaveImages } from '../utils/image.js';
-
+import { adsEditRequestSchema } from '../constants/schema.js';
+import validate from '../middlewares/validate.mdw.js';
 // ============== BIỂN QUẢNG CÁO ===============
-    
+
 // [CÁN BỘ SỞ] Lấy danh sách yêu cầu chỉnh sửa BQC
 router.get('/ads', controller.getAdsEditRequests);
 
@@ -21,6 +22,7 @@ router.get('/ads/:id', controller.getAdsEditRequest);
 router.post(
     '/ads',
     staffAuth,
+    validate(adsEditRequestSchema),
     upload.array('images'),
     resizeAndSaveImages,
     controller.postAdsEditRequest,

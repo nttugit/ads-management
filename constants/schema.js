@@ -113,11 +113,88 @@ const reportTypeSchema = {
     additionalProperties: false,
 };
 
+// Loại địa điểm
+const locationTypeSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+        },
+    },
+    required: ['name'],
+    additionalProperties: false,
+};
+
+const adsEditRequestSchema = {
+    type: 'object',
+    properties: {
+        ads: {
+            type: 'string',
+        },
+        title: {
+            type: 'string',
+        },
+        content: {
+            type: 'string',
+        },
+        price: {
+            type: 'number',
+        },
+        billboardType: {
+            type: 'string',
+        },
+        reason: {
+            type: 'string',
+        },
+    },
+    // required: ['ads', reason],
+    additionalProperties: true,
+};
+
+const adsSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+        },
+
+        content: {
+            type: 'string',
+        },
+        startDate: {
+            type: 'string',
+        },
+        endDate: {
+            type: 'string',
+        },
+        price: {
+            type: 'number',
+        },
+        width: {
+            type: 'number',
+        },
+        height: {
+            type: 'number',
+        },
+        billboardType: {
+            type: 'string',
+        },
+        adsLocation: {
+            type: 'string',
+        },
+    },
+    // required: ['ads', reason],
+    additionalProperties: true,
+};
+
 export {
     staffSchema,
     refreshTokenSchema,
     selfUpdateStaffSchema,
     reportTypeSchema,
+    locationTypeSchema,
     wardSchema,
     districtSchema,
+    adsEditRequestSchema,
+    adsSchema,
 };
