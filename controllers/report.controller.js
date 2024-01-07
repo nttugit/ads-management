@@ -61,21 +61,15 @@ controller.getAdsReports = async (req, res) => {
 
     // Nếu phân quyền cán bộ
     const staff = req.staff;
-    if (req.staff) {
-        // #todo: nếu chưa phân phường thì sao??? -> thì không có báo cáo thôi
+    if (staff) {
         // Nếu cán bộ có role này thì lấy dữ liệu phường đó
         if (staff.role == 'canbo_phuong' && staff.assigned.ward)
             wardCondition.push(staff.assigned.ward);
+
         // Nếu cán bộ có role này thì lấy dữ liệu quận đó
         if (staff.role == 'canbo_quan' && staff.assigned.district) {
             districtCondition.push(staff.assigned.district);
-        } else if (staff.role == 'canbo_so') {
-            // Lấy hết
         } else {
-            // Nếu cán bộ chưa được phân công sẽ không thấy gì
-            return res
-                .status(200)
-                .json(RESPONSE.SUCCESS([], 'get sucessfully'));
         }
 
         if (typeof districts === 'string')
@@ -97,7 +91,6 @@ controller.getAdsReports = async (req, res) => {
     }
 
     if (status !== -99) conditions['status'] = status;
-    console.log('conditions:', conditions);
 
     const data = await adsReportHandler.getList(
         conditions,

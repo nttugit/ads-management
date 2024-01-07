@@ -69,7 +69,8 @@ cron.schedule('0 0 * * 1', () => {
 // Sử dụng middleware express-winston để ghi log các request và response
 app.use(
     expressWinston.logger({
-        transports: [new winston.transports.Console(), dailyRotateTransport],
+        // transports: [new winston.transports.Console(), dailyRotateTransport],
+        transports: [dailyRotateTransport],
         format: logFormat,
         meta: true,
         msg: 'HTTP {{req.method}} {{res.statusCode}} {{req.url}}',
