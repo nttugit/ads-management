@@ -36,6 +36,17 @@ const staffSchema = {
     required: ['username', 'password'],
     additionalProperties: false,
 };
+// Refresh token
+const refreshTokenSchema = {
+    type: 'object',
+    properties: {
+        refreshToken: {
+            type: 'string',
+        },
+    },
+    required: ['refreshToken'],
+    additionalProperties: false,
+};
 
 // Cán bộ tự cập nhật thông tin cá nhân
 const selfUpdateStaffSchema = {
@@ -104,6 +115,7 @@ const reportTypeSchema = {
 
 export {
     staffSchema,
+    refreshTokenSchema,
     selfUpdateStaffSchema,
     reportTypeSchema,
     wardSchema,

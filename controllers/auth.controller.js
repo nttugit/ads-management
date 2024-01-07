@@ -2,12 +2,11 @@ import RESPONSE from '../constants/response.js';
 import Handler from '../handlers/auth.handler.js';
 import WardHandler from '../handlers/ward.handler.js';
 import DistrictHandler from '../handlers/district.handler.js';
-import { SALT_ROUNDS } from '../constants/auth.js';
+import StaffHandler from '../handlers/staff.handler.js';
 import {
     generateToken,
     verifyToken,
     generateRefreshToken,
-    verifyRefreshToken,
     hashPassword,
     comparePassword,
 } from '../utils/auth.js';
@@ -15,6 +14,7 @@ import {
 const handler = new Handler();
 const wardHandler = new WardHandler();
 const districtHandler = new DistrictHandler();
+const staffHandler = new StaffHandler();
 const controller = {};
 
 // controller.register = async (req, res) => {
@@ -120,6 +120,69 @@ controller.login = async (req, res) => {
             'login successfully',
         ),
     );
+};
+
+controller.refreshToken = async (req, res) => {
+    // Kiểm tra access token
+    const authorizationHeader = req.headers['authorization'];
+    const accessTokenFromHeader = authorizationHeader?.split(' ')[1];
+    if (!accessTokenFromHeader) {
+        return res.status(401).json(RESPONSE.FAILURE(401, 'Access denied'));
+    }
+
+    // Decode access token đó để lấy thông tin, sau đó truy vấn xuống db lấy refresh token
+    const decoded = verifyToken(accessTokenFromHeader);
+    if (!decoded)
+        return res.status(401).json(RESPONSE.FAILURE(401, 'Access denied'));
+
+    // Lấy refresh token từ body
+    const refreshTokenFromBody = req.body.refreshToken;
+    if (!refreshTokenFromBody) {
+        return res
+            .status(400)
+            .json(RESPONSE.FAILURE(400, 'Không tìm thấy refresh token.'));
+    }
+
+    const { username } = decoded;
+    const staff = await staffHandler.getOne(
+        { username },
+        { refreshToken: 1, role: 1, assigned: 1 },
+    );
+    if (!staff) {
+        return res.status(401).json(RESPONSE.FAILURE(401, 'user not found'));
+    }
+
+    if (refreshTokenFromBody !== staff.refreshToken) {
+        return res
+            .status(400)
+            .json(RESPONSE.FAILURE(400, 'Refresh token không hợp lệ.'));
+    }
+
+    // Tạo access token mới
+    const accessTokenData = {
+        username,
+        role: staff.role,
+        assigned: staff.assigned,
+    };
+    const accessToken = generateToken(accessTokenData);
+    if (!accessToken)
+        return res
+            .status(500)
+            .json(
+                RESPONSE.FAILURE(
+                    500,
+                    'Tạo access token không thành công, vui lòng thử lại.',
+                ),
+            );
+    return res
+        .status(200)
+        .json(
+            RESPONSE.SUCCESS(
+                accessToken,
+                'Tạo thành công access token mới',
+                null,
+            ),
+        );
 };
 
 export default controller;

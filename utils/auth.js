@@ -20,6 +20,15 @@ function generateToken(payload) {
     }
 }
 
+function verifyToken(token) {
+    try {
+        return jwt.verify(token, ACCESS_TOKEN_SECRET);
+    } catch (error) {
+        console.log(`Error in verify access token:  + ${error}`);
+        return null;
+    }
+}
+
 function generateRefreshToken(payload) {
     try {
         return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
@@ -28,15 +37,6 @@ function generateRefreshToken(payload) {
         });
     } catch (error) {
         console.log(`Error in generate access token:  + ${error}`);
-        return null;
-    }
-}
-
-function verifyToken(token) {
-    try {
-        return jwt.verify(token, ACCESS_TOKEN_SECRET);
-    } catch (error) {
-        console.log(`Error in verify access token:  + ${error}`);
         return null;
     }
 }
