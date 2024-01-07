@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-
 // Thư viện để sài biến môi trường
 import dotenv from 'dotenv';
 dotenv.config();
@@ -9,6 +8,93 @@ dotenv.config();
 // Tạo server express app
 const app = express();
 const port = process.env.PORT || 3000;
+
+// GHI LOG
+
+import winston from 'winston';
+import expressWinston from 'express-winston';
+import { format } from 'logform';
+import DailyRotateFile from 'winston-daily-rotate-file';
+// Để xoá log định kỳ
+import cron from 'node-cron';
+import fs from 'fs';
+
+// THIẾT LẬP LOGGING
+// Thiết lập transport cho Winston để quay vòng log hàng ngày
+const dailyRotateTransport = new DailyRotateFile({
+    filename: 'logs/%DATE%.log',
+    datePattern: 'YYYY-MM-DD',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d',
+});
+// Thiết lập các tùy chọn định dạng log của Winston
+const logFormat = format.combine(format.timestamp(), format.json());
+
+// Thiết lập Winston logger
+const logger = winston.createLogger({
+    format: logFormat,
+    transports: [new winston.transports.Console(), dailyRotateTransport],
+});
+
+// Xoá log files cũ mỗi tuần vào 1 thứ Hai lúc 00:00 AM
+cron.schedule('0 0 * * 1', () => {
+    const logsDirectory = 'logs';
+
+    fs.readdir(logsDirectory, (err, files) => {
+        if (err) throw err;
+
+        files.forEach((file) => {
+            const filePath = `${logsDirectory}/${file}`;
+
+            fs.stat(filePath, (err, stat) => {
+                if (err) throw err;
+
+                const currentTime = new Date().getTime();
+                const fileCreationTime = stat.birthtime.getTime();
+                const timeDifference = currentTime - fileCreationTime;
+
+                // Xoá log files cũ hơn 7 ngày
+                if (timeDifference > 7 * 24 * 60 * 60 * 1000) {
+                    fs.unlink(filePath, (err) => {
+                        if (err) throw err;
+                        console.log(`Deleted log file: ${filePath}`);
+                    });
+                }
+            });
+        });
+    });
+});
+
+// Sử dụng middleware express-winston để ghi log các request và response
+app.use(
+    expressWinston.logger({
+        transports: [new winston.transports.Console(), dailyRotateTransport],
+        format: logFormat,
+        meta: true,
+        msg: 'HTTP {{req.method}} {{res.statusCode}} {{req.url}}',
+        expressFormat: true,
+        colorize: false,
+    }),
+);
+
+// Middleware xử lý lỗi và ghi log lỗi
+app.use((err, req, res, next) => {
+    logger.error(
+        `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${
+            req.method
+        } - ${req.ip}`,
+    );
+    next(err);
+});
+
+// Middleware express-winston để ghi log lỗi
+app.use(
+    expressWinston.errorLogger({
+        transports: [new winston.transports.Console(), dailyRotateTransport],
+        format: logFormat,
+    }),
+);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
