@@ -11,7 +11,7 @@ const controller = {};
 
 controller.getAdsLocations = async (req, res) => {
     const {
-        size = 50,
+        size = 1000,
         page = 1,
         isPlanned = false, // quy hoạch
         status = -99,
