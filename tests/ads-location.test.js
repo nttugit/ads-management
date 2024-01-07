@@ -1,13 +1,15 @@
-// Tạo một hàm để hiển thị thông báo
-function showMessage() {
-    alert('Xin chào! Bạn đã nhấn vào nút này.');
-}
+// functions.js
 
-// Lấy tham chiếu đến nút trong HTML bằng ID
-const buttonElement = document.getElementById('myButton');
+function add(a, b) {
+    return a + b;
+  }
+  
+  module.exports = add;
 
-// Thêm sự kiện click cho nút
-buttonElement.addEventListener('click', showMessage);
+  // __tests__/functions.test.js
 
+const add = require('../functions');
 
-export default ads-location.test;
+test('adds 1 + 2 to equal 3', () => {
+  expect(add(1, 2)).toBe(3);
+});
